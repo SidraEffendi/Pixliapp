@@ -51,7 +51,7 @@ public class Events extends AppCompatActivity {
                 // --- open the dialog box showing unique code --
 
                 //generating a random unique code
-                code = "1A24";
+                code = "ASP1";
 
                 //creating a dialog box
                 alertDialogBuilder = new AlertDialog.Builder(Events.this);
@@ -116,8 +116,8 @@ public class Events extends AppCompatActivity {
                             }
                         });
 
-                        //Intent myIntent = new Intent(Events.this, BucketDisplay.class);
-                        //Events.this.startActivity(myIntent);
+                        Intent myIntent = new Intent(Events.this, BucketDisplay.class);
+                        Events.this.startActivity(myIntent);
                     }
                 });
             }
