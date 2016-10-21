@@ -18,13 +18,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Event Name:"
+            android:text="Event Type:"
             android:id="@+id/textView1" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/EventName"
+            android:id="@+id/EventType"
             android:layout_weight="1" />
     </LinearLayout>
     <LinearLayout
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/EventDate"
             android:layout_weight="1"
-            android:hint="dd-mm-yyyy" />
+            android:hint="yyyy-mm-dd" />
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"

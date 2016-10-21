@@ -1,5 +1,8 @@
 package com.example.sidra.pixliapp.retrofit;
 
+import com.example.sidra.pixliapp.CustomViewHolder;
+import com.example.sidra.pixliapp.CustomViewResponse;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -10,6 +13,6 @@ import retrofit2.http.POST;
 
 public interface ApiInterface {
 
-    //@POST("")
-    //Call<CustomViewResponse> createTask(@Body CustomViewHolder task);
+    @POST("/pixpost/new")
+    Call<CustomViewResponse> createTask(@Body CustomViewHolder task);
 }
