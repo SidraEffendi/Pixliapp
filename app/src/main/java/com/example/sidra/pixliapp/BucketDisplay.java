@@ -44,9 +44,9 @@ public class BucketDisplay extends AppCompatActivity {
     String[] mThumbIds1 = {"images/first.jpg","images/frustration.jpg","images/g.jpg"};
     //,"images/05es.jpg","images/15es","images/2 ee.jpg","images/25es.jpg","images/again??.jpg"
 
-    CognitoCachingCredentialsProvider credentialsProvider;
-    AmazonS3 s3;
-    TransferUtility transferUtility;
+    static CognitoCachingCredentialsProvider credentialsProvider;
+    static AmazonS3 s3;
+     TransferUtility transferUtility;
 
     int position;
     public static String[] result = new String[2];
