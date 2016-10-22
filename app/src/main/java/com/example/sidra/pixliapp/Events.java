@@ -20,6 +20,8 @@ import retrofit2.Response;
 
 /**
  * Created by sidra on 20-10-2016.
+ *
+ * This class sends the event details entered by the user into the postgreSQL database through (Flask) api.
  */
 
 public class Events extends AppCompatActivity {
