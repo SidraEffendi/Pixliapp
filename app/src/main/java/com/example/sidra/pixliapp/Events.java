@@ -78,8 +78,6 @@ public class Events extends AppCompatActivity {
                      //-----Post all data to the flask api for entry in postgreSQl db-----//
 
                         //get the entered details
-
-
                         //creating object of CustomViewHolder type
                         //CustomViewHolder cc = new CustomViewHolder("zz2C","Travel","Travelogue","2016-12-12","Gulmarg","http://zcjsckjdcjk233=&");
                         CustomViewHolder ab = new CustomViewHolder();
@@ -88,7 +86,7 @@ public class Events extends AppCompatActivity {
                         ab.setAlbum_name(AlbumName.getText().toString());
                         ab.setEvent_date(EventDate.getText().toString());
                         ab.setEvent_loc(EventLocation.getText().toString());
-                        ab.setBucket_link("ffgjjhgkhljkjhggdgfsddsff5656665454545");
+                        ab.setBucket_link("img"+code);
 
                         //creating call to post data
                         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,10 +56,21 @@ public class BucketDisplay extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bucket_display);
+        setContentView(R.layout.bucket_display_fab);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Click action
+
+            }
+        });
 
         credentialsProvider = new CognitoCachingCredentialsProvider(
-
+                getApplicationContext(),    /* get the context for the application */
+                "ap-northeast-1:2c9313f6-ef22-44e7-bdb3-2a41f5b155a3",    /* Identity Pool ID */
+                Regions.AP_NORTHEAST_1          /* Region for your identity pool--US_EAST_1 or EU_WEST_1*/
         );
 
         s3 = new AmazonS3Client(credentialsProvider);
@@ -104,7 +116,7 @@ public class BucketDisplay extends AppCompatActivity {
 
                         //generating uri for image in S3 bucket
                         GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                                new GeneratePresignedUrlRequest("bucket_name", mThumbIds1[i]);
+                                new GeneratePresignedUrlRequest("pixliapp01", mThumbIds1[i]);
                         // new GeneratePresignedUrlRequest("pixliapp01", "images/05es.jpg");
                         generatePresignedUrlRequest.setMethod(HttpMethod.GET); // Default.
                         generatePresignedUrlRequest.setExpiration(expiration);
