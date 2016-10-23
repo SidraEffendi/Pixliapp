@@ -2,10 +2,10 @@ package com.example.sidra.pixliapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,11 +55,25 @@ public class BucketDisplay extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bucket_display);
+        setContentView(R.layout.event_detail_fab);
+
+
+        //FAB button code starts here
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Click action
+
+            }
+        });
 
         credentialsProvider = new CognitoCachingCredentialsProvider(
-
+                getApplicationContext(),    /* get the context for the application */
+                "ap-northeast-1:2c9313f6-ef22-44e7-bdb3-2a41f5b155a3",    /* Identity Pool ID */
+                Regions.AP_NORTHEAST_1          /* Region for your identity pool--US_EAST_1 or EU_WEST_1*/
         );
+
 
         s3 = new AmazonS3Client(credentialsProvider);
         s3.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));

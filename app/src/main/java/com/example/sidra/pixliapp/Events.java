@@ -3,6 +3,7 @@ package com.example.sidra.pixliapp;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ public class Events extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_detail);
+
 
         //
         EventType = (EditText) findViewById(R.id.EventType);

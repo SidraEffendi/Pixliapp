@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+
         ///////// When create event button is clicked user is directed to Events java class //////
 
         CreateEvent = (Button) findViewById(R.id.Create);
