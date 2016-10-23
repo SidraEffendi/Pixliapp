@@ -58,15 +58,6 @@ public class BucketDisplay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bucket_display_fab);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Click action
-
-            }
-        });
-
         credentialsProvider = new CognitoCachingCredentialsProvider(
                 getApplicationContext(),    /* get the context for the application */
                 "ap-northeast-1:2c9313f6-ef22-44e7-bdb3-2a41f5b155a3",    /* Identity Pool ID */
@@ -90,6 +81,17 @@ public class BucketDisplay extends AppCompatActivity {
                 startActivity(intent);
             }
 
+        });
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Click action
+
+                Intent myIntent = new Intent(BucketDisplay.this,UploadActivity.class);
+                BucketDisplay.this.startActivity(myIntent);
+            }
         });
     }
 

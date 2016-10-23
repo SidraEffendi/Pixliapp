@@ -88,6 +88,9 @@ public class Events extends AppCompatActivity {
                         ab.setEvent_loc(EventLocation.getText().toString());
                         ab.setBucket_link("img"+code);
 
+                        //CustomViewPhotoHolder photo = new CustomViewPhotoHolder();
+                        //photo.setPhoto_code_id(code);
+
                         //creating call to post data
                         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
                         Call<CustomViewResponse> call1 = apiService.createTask(ab);
