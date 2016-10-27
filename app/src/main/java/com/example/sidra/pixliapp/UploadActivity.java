@@ -18,19 +18,37 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.example.sidra.pixliapp.retrofit.ApiClient;
+import com.example.sidra.pixliapp.retrofit.ApiInterface;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.UUID;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.example.sidra.pixliapp.BucketDisplay.s3;
+import static com.example.sidra.pixliapp.MainActivity.EVENT_ID;
+import static com.example.sidra.pixliapp.MainActivity.FOLDER_NAME;
+import static com.example.sidra.pixliapp.MainActivity.PHOTO_COUNT;
+import static com.example.sidra.pixliapp.R.id.AlbumName;
+import static com.example.sidra.pixliapp.R.id.EventType;
 
 /**
  * Created by sidra on 23-10-2016.
+ *
+ * This Activity starts when fab button is clicked to upload images, currently only from gallery. To select images from galllery the
+ * GActivity is started which returns the selected images to this activity.
+ * Then a random string is generated as the name of the photo and a call is made to the database to check that this name already exist.If so then another string is generated.
+ * The images are then loaded to the S3 bucket with their details being stored in the database through a POST call.
  */
 
 public class UploadActivity extends Activity{
@@ -41,7 +59,8 @@ public class UploadActivity extends Activity{
     private static int PICK_IMAGE_MULTIPLE = 1;
 
     File fileToUpload;
-    String picturePath = "";
+    String Imgcode_temp;
+    String UploadedPhotos = "";
 
     private ArrayList<String> imagesPathList;
     private LinearLayout lnrImages;
@@ -59,10 +78,7 @@ public class UploadActivity extends Activity{
         ////
         Log.i("Intent", "onClick1");
         Intent myIntent1 = new Intent(UploadActivity.this, GActivity.class);
-        Log.i("Intent", "onClick2");
-
         startActivityForResult(myIntent1, PICK_IMAGE_MULTIPLE);
-        Log.i("Intent", "onClick3");
         //setFileToUpload()
     }
 
@@ -71,30 +87,9 @@ public class UploadActivity extends Activity{
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PHOTO_SELECTED && resultCode == RESULT_OK && null != data) {
-
-            Log.i("my Main", "updating in gallery");
-            Uri selectedImage = data.getData();
-
-
-            try {
-
-                picturePath = getPath(getApplicationContext(), selectedImage);
-                Log.i("my Main", "updating.......");
-                fileToUpload = new File(picturePath);
-                Log.i("my Main", "updating....... 01");
-                TransferObserver transferObserver = transferUtility.upload("pixliapp01", "images/pix1.jpg", fileToUpload);
-                Log.i("my Main", "updating....... 02");
-                transferObserverListener(transferObserver);
-            } catch (Exception e) {
-                Log.i("my Main", "updating......." + e);
-            }
-        }
-
         if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK && null != data) {
 
             Log.i("my Main", "updating in gallery");
-
 
             imagesPathList = new ArrayList<String>();
             String[] imagesPath = data.getStringExtra("data").split("\\|");
@@ -111,17 +106,65 @@ public class UploadActivity extends Activity{
                 imageView.setAdjustViewBounds(true);
                 Log.i("Image", "" + yourbitmap);
                 Log.i("Image", "" + imagesPath[i]);
-                // lnrImages.addView(imageView);
 
+                //generating a random Photo name to be stored in image_url column of Photos Database (i in billion chances of being same)
+                UUID uniqueKey = UUID.randomUUID();
+                Imgcode_temp = uniqueKey.toString();
+                System.out.println(Imgcode_temp);
 
+                FOLDER_NAME= "img"+EVENT_ID;
                 String picturePath = imagesPath[i];
-                Log.i("my Main", "updating.......");
                 fileToUpload = new File(picturePath);
-                Log.i("my Main", "updating....... 01");
-                TransferObserver transferObserver = transferUtility.upload("pixliapp01", "images/" + i + 8 + "es.jpg", fileToUpload);
-                Log.i("my Main", "updating....... 02");
+                TransferObserver transferObserver = transferUtility.upload("pixliapp01", FOLDER_NAME +"/"+Imgcode_temp+"photo.jpg", fileToUpload);
                 transferObserverListener(transferObserver);
+
+                UploadedPhotos = Imgcode_temp + "photo.jpg";
+
+                //------- In this section the details of the photos uploaded to S3 bucket, are entered into the database via POST call
+
+                // entering the details of photos in the photos table
+                CustomViewPhotosHolder entry = new CustomViewPhotosHolder();       //creating object of CustomViewPhotosHolder type
+                entry.setPhoto_code_id(EVENT_ID);
+                entry.setImage_url(UploadedPhotos);
+
+
+                //creating call to post data to api
+                ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+                Call<CustomViewPhotosResponse> call = apiService.createPhotos(EVENT_ID,entry);
+                call.enqueue(new Callback<CustomViewPhotosResponse>() {
+                    @Override
+                    public void onResponse(Call<CustomViewPhotosResponse> call, Response<CustomViewPhotosResponse> respo) {
+                        int statuscode = respo.code();
+
+                        Log.d("Message", "code..."+respo.code() + " message..." + respo.message());
+
+                        CustomViewPhotosResponse respon = respo.body();
+
+                        if (respon == null){
+                            Log.e("Error",""+statuscode+ "......"+ respo.message()+"....null body");
+                        }
+                        else{
+                            Log.e("Success",""+statuscode+ "......"+ respo.message()+"vvvvv body exists");
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<CustomViewPhotosResponse> call, Throwable t) {
+
+                        Log.e("Photo Posting Failed", t.toString());
+                        Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
+            PHOTO_COUNT =1;
+            System.out.println("GOING BACK");
+            Intent ii = new Intent(UploadActivity.this,BucketDisplay.class);
+            System.out.println("222 GOING BACK");
+            //ii.putExtra("data", UploadedPhotos);
+            setResult(Activity.RESULT_OK, ii);
+            System.out.println("333 GOING BACK");
+            finish();
         }
     }
 
@@ -129,147 +172,25 @@ public class UploadActivity extends Activity{
 
         transferObserver.setTransferListener(new TransferListener() {
             public void onStateChanged(int id, TransferState state) {
+                System.out.println("INSIDE STATE CHANGED");
+
             }
 
             public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                System.out.println("PROGRESS CHANGED");
             }
 
             public void onError(int id, Exception ex) {
+
+                System.out.println("ON ERROR" + ex);
             }
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(Activity.RESULT_CANCELED);
+        super.onBackPressed();
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static String getPath(final Context context, final Uri uri) {
-
-        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-
-        // DocumentProvider
-        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-            // ExternalStorageProvider
-            if (isExternalStorageDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-
-                if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
-                }
-
-                // TODO handle non-primary volumes
-            }
-            // DownloadsProvider
-            else if (isDownloadsDocument(uri)) {
-
-                final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
-                return getDataColumn(context, contentUri, null, null);
-            }
-            // MediaProvider
-            else if (isMediaDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-
-                Uri contentUri = null;
-                if ("image".equals(type)) {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                } else if ("video".equals(type)) {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                } else if ("audio".equals(type)) {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                }
-
-                final String selection = "_id=?";
-                final String[] selectionArgs = new String[]{
-                        split[1]
-                };
-
-                return getDataColumn(context, contentUri, selection, selectionArgs);
-            }
-        }
-        // MediaStore (and general)
-        else if ("content".equalsIgnoreCase(uri.getScheme())) {
-
-            // Return the remote address
-            if (isGooglePhotosUri(uri))
-                return uri.getLastPathSegment();
-
-            return getDataColumn(context, uri, null, null);
-        }
-        // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the value of the data column for this Uri. This is useful for
-     * MediaStore Uris, and other file-based ContentProviders.
-     *
-     * @param context       The context.
-     * @param uri           The Uri to query.
-     * @param selection     (Optional) Filter used in the query.
-     * @param selectionArgs (Optional) Selection arguments used in the query.
-     * @return The value of the _data column, which is typically a file path.
-     */
-    public static String getDataColumn(Context context, Uri uri, String selection,
-                                       String[] selectionArgs) {
-
-        Cursor cursor = null;
-        final String column = "_data";
-        final String[] projection = {
-                column
-        };
-
-        try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
-                    null);
-            if (cursor != null && cursor.moveToFirst()) {
-                final int index = cursor.getColumnIndexOrThrow(column);
-                return cursor.getString(index);
-            }
-        } finally {
-            if (cursor != null)
-                cursor.close();
-        }
-        return null;
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
-    public static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
-    public static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
-    public static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
-    public static boolean isGooglePhotosUri(Uri uri) {
-        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 }
