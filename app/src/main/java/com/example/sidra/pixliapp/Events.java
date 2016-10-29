@@ -122,6 +122,9 @@ public class Events extends AppCompatActivity {
                                     Log.e("Success",""+statuscode+ "......"+ respo.message()+"vvvvv body exists");
                                     EVENT_ID=code;
                                     FOLDER_NAME = temp;
+                                    Intent myIntent = new Intent(Events.this, BucketDisplay.class);
+                                    Events.this.finish();
+                                    startActivity(myIntent);
                                 }
 
                             }
@@ -133,10 +136,6 @@ public class Events extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
                             }
                         });
-
-                        Intent myIntent = new Intent(Events.this, BucketDisplay.class);
-                        Events.this.finish();
-                        startActivity(myIntent);
 
                     }
                 });

@@ -42,6 +42,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.example.sidra.pixliapp.MainActivity.EVENT_ID;
+import static com.example.sidra.pixliapp.MainActivity.FOLDER_NAME;
 import static com.example.sidra.pixliapp.MainActivity.PHOTO_COUNT;
 
 /**
@@ -52,15 +53,18 @@ import static com.example.sidra.pixliapp.MainActivity.PHOTO_COUNT;
 
 public class BucketDisplay extends AppCompatActivity {
 
-    String[] imagesName;
-    String[] mThumbIds1 = {"images/first.jpg","images/frustration.jpg","images/g.jpg"};
+    //String[] mThumbIds1 = {"images/first.jpg","images/frustration.jpg","images/g.jpg"};
     //,"images/05es.jpg","images/15es","images/2 ee.jpg","images/25es.jpg","images/again??.jpg"
+    //String[] mThumbIds1= new String[1000];
+    List<String> mThumbIds1 = new ArrayList<String>();
+    public static List<String> result = new ArrayList<String>();
+    int photoSize =0;
 
     static CognitoCachingCredentialsProvider credentialsProvider;
     static AmazonS3 s3;
      TransferUtility transferUtility;
 
-    public static String[] result = new String[2];
+    //public static String[] result = new String[2];
     GridView gridview;
 
     @Override
@@ -98,13 +102,13 @@ public class BucketDisplay extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     PHOTO_COUNT =1;
-                    setImage(BucketDisplay.this, gridview, 1);
+                    photoEntry();
+
                 }
                 else{
                     Log.e("Error",""+statuscode+ "......"+ "....null body");
                     Toast.makeText(getApplicationContext(), "Add images to your event", Toast.LENGTH_LONG).show();
                 }
-
 
             }
 
@@ -157,15 +161,16 @@ public class BucketDisplay extends AppCompatActivity {
 
         if(requestCode == 123  && resultCode == RESULT_OK ) {
             System.out.println("INSIDE BUCKET AGAIN: "+ PHOTO_COUNT);
-            setImage(this, gridview, 1);
+            photoEntry();
+            //setImage(BucketDisplay.this, gridview, 1);
+
         }
         else{
             System.out.println("SOMETHING MISSING");
         }
     }
 
-    private void setImage(final Context context,final ViewGroup parent, final int id) {
-
+    public void photoEntry(){
         // make a get call to get the image_url(names) of the photos having current Event_ID
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<CustomViewPhotosResponse> call = apiService.getPhotosOfEvent(EVENT_ID);
@@ -173,39 +178,53 @@ public class BucketDisplay extends AppCompatActivity {
             @Override
             public void onResponse(Call<CustomViewPhotosResponse> call, Response<CustomViewPhotosResponse> response) {
                 int statuscode = response.code();
-                List<CustomViewPhotosHolder> customViewHolders = response.body().getResults();
+                List<CustomViewPhotosHolder> customViewPhotosHolders = response.body().getResults();
                 Log.e("BucketDisplayGetCall", "Response: "+statuscode);
 
-                if (customViewHolders != null){
+                if (customViewPhotosHolders != null){
                     // Get the image urls from the response body and store it in an array mThumbIds
                     PHOTO_COUNT =1;
+                    System.out.println("photos exist");
+                    List<String> images = new ArrayList<String>();
+                    photoSize = customViewPhotosHolders.size();
 
+                    for(int i = 0, count = photoSize; i< count; i++)
+                    {
+                        images.add(customViewPhotosHolders.get(i).getImage_url());
+                        System.out.println("NAME photos " + images.get(i));
+                        mThumbIds1.add(FOLDER_NAME+"/"+images.get(i));
+                        System.out.println("NAME photos " + mThumbIds1.get(i));
+                    }
+                    Log.e("BucketDisplaySize:", ""+photoSize);
+                    Log.e("BucketDisplaySize:", FOLDER_NAME);
+                    setImage(BucketDisplay.this, gridview, 1);
                 }
                 else{
                     Log.e("Error",""+statuscode+ "......"+ "....null body");
                 }
-
-                //recyclerView.setAdapter(new AdapterSid(customViewHolders, R.layout.list_item_sid, getApplicationContext()));
                 // Update mThumbsID with the imageurl in the response.
-
             }
 
             @Override
             public void onFailure(Call<CustomViewPhotosResponse> call, Throwable t) {
-                Log.e("BucketDisplayGetCall", t.toString());
+                Log.e("FailBucketDisplGetCall", t.toString());
             }
         });
+    }
+    private void setImage(final Context context,final ViewGroup parent, final int id) {
 
-        new AsyncTask<Void, Void, String[]>() {
+
+        new AsyncTask<Void, Void, List<String>>() {
 
             @Override
-            protected String[] doInBackground(Void... params) {
+            protected List<String> doInBackground(Void... params) {
 
                 try {
 
                     //In mThumbsId1 the name of the images from the database will be stored
                     //for(int i=0;i< imagesName.length;i++) {
-                    for(int i=0;i< mThumbIds1.length;i++) {
+                    Log.e("URL: ", "started");
+                    for(int i=0;i< photoSize;i++) {
                         //Extending the expiry time for photto remission
                         java.util.Date expiration = new java.util.Date();
                         long msec = expiration.getTime();
@@ -213,19 +232,17 @@ public class BucketDisplay extends AppCompatActivity {
                         expiration.setTime(msec);
 
                         //generating uri for image in S3 bucket
+                        Log.e("URL:", mThumbIds1.get(i));
                         GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                                new GeneratePresignedUrlRequest("pixliapp01", mThumbIds1[i]);
-                        /*GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                                new GeneratePresignedUrlRequest("pixliapp01", imagesName[i]);*/
-                        // new GeneratePresignedUrlRequest("pixliapp01", "images/05es.jpg");
+                                new GeneratePresignedUrlRequest("pixliapp01", mThumbIds1.get(i));
                         generatePresignedUrlRequest.setMethod(HttpMethod.GET); // Default.
                         generatePresignedUrlRequest.setExpiration(expiration);
 
                         URL ss = s3.generatePresignedUrl(generatePresignedUrlRequest);
                         System.out.println("THE URL" + ss);
-                        result[i]=ss.toString();
+                        result.add(ss.toString());
                         //uri = Uri.parse(ss.toString());
-                        System.out.println("jnkjnn" + result[i]);
+                        System.out.println("jnkjnn" + result.get(i));
                         //result[i]= uri;
                     }
                 }catch(Exception e){System.out.println(""+e);}
@@ -233,11 +250,11 @@ public class BucketDisplay extends AppCompatActivity {
             }
 
             @Override
-            protected void onPostExecute(String[] result) {
+            protected void onPostExecute(List<String> result) {
                 super.onPostExecute(result);
 
-                for(int j=0;j<result.length;j++) {
-                    System.out.println("In Post Execute :" + result[j]);
+                for(int j=0;j<result.size();j++) {
+                    System.out.println("In Post Execute :" + result.get(j));
                 }
 
                 gridview.setAdapter(new ImageAdapter(context));
@@ -254,7 +271,7 @@ public class BucketDisplay extends AppCompatActivity {
         }
 
         public int getCount() {
-            return result.length;
+            return result.size();
         }
 
         public Object getItem(int position) {
@@ -284,7 +301,7 @@ public class BucketDisplay extends AppCompatActivity {
             //imageView.setImageResource(mThumbIds[position]);
             System.out.println("iiiiiiiiii");
             Picasso.with(mContext)
-                    .load(result[position])
+                    .load(result.get(position))
                     .placeholder(R.drawable.s_9)
                     .error(R.drawable.s_9)
                     //.resize(60, 60)

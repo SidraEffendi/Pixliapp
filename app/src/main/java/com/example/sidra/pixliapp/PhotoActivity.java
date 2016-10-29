@@ -54,10 +54,10 @@ public class PhotoActivity extends Activity {
 
         //---- This section is responsible for enlarging the image which has been clicked
         int position = getIntent().getIntExtra("position",-1);
-        System.out.println("THE RESULT: "+BucketDisplay.result[position].toString());
+        System.out.println("THE RESULT: "+BucketDisplay.result.get(position).toString());
         if(position != -1){
             Picasso.with(PhotoActivity.this)
-                    .load(BucketDisplay.result[position])
+                    .load(BucketDisplay.result.get(position))
                     .into(imageView);
         }
         else{

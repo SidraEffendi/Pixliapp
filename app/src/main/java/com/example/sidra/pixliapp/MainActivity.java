@@ -112,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
                                             }catch (IOException e) {
                                                 e.printStackTrace();
                                             }
+
+                                            //make the post call return json and take bucket_link from it
+                                            //temporary fix
+                                            FOLDER_NAME = "img"+EVENT_ID;
                                             Intent myIntent = new Intent(MainActivity.this, BucketDisplay.class);
                                             MainActivity.this.startActivity(myIntent);
 
