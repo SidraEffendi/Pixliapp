@@ -23,6 +23,7 @@ import retrofit2.Response;
 
 import static com.example.sidra.pixliapp.MainActivity.EVENT_ID;
 import static com.example.sidra.pixliapp.MainActivity.FOLDER_NAME;
+import static java.lang.Boolean.TRUE;
 
 /**
  * Created by sidra on 20-10-2016.
@@ -102,10 +103,11 @@ public class Events extends AppCompatActivity {
                         ab.setEvent_loc(EventLocation.getText().toString());
                         temp = "img"+code;
                         ab.setBucket_link(temp);
+                        String email_Id = getIntent().getStringExtra("email_Id");
 
                         //creating call to post data to api
-                        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-                        Call<CustomViewResponse> call1 = apiService.createTask(ab);
+                        ApiInterface apiService = ApiClient.createService(ApiInterface.class);
+                        Call<CustomViewResponse> call1 = apiService.createEvent(ab,email_Id);
                         call1.enqueue(new Callback<CustomViewResponse>() {
                             @Override
                             public void onResponse(Call<CustomViewResponse> call1, Response<CustomViewResponse> respo) {
@@ -122,7 +124,7 @@ public class Events extends AppCompatActivity {
                                     Log.e("Success",""+statuscode+ "......"+ respo.message()+"vvvvv body exists");
                                     EVENT_ID=code;
                                     FOLDER_NAME = temp;
-                                    Intent myIntent = new Intent(Events.this, BucketDisplay.class);
+                                    Intent myIntent = new Intent(Events.this, Event_List.class);
                                     Events.this.finish();
                                     startActivity(myIntent);
                                 }

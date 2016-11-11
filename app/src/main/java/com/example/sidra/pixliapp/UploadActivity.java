@@ -129,7 +129,7 @@ public class UploadActivity extends Activity{
 
 
                 //creating call to post data to api
-                ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+                ApiInterface apiService = ApiClient.createService(ApiInterface.class);
                 Call<CustomViewPhotosResponse> call = apiService.createPhotos(EVENT_ID,entry);
                 call.enqueue(new Callback<CustomViewPhotosResponse>() {
                     @Override

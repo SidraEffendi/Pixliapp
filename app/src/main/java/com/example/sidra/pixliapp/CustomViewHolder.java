@@ -29,9 +29,10 @@ public class CustomViewHolder {
     @SerializedName("bucket_link")
     private String bucket_link;
 
+
     public CustomViewHolder(){}
 
-    public CustomViewHolder(String code_id, String event_type, String album_name, String event_date, String event_loc, String bucket_link){
+    public CustomViewHolder(String code_id, String event_type, String album_name, String event_date, String event_loc, String bucket_link,Boolean authority) {
         this.code_id = code_id;
         this.event_type = event_type;
         this.album_name = album_name;
@@ -85,4 +86,5 @@ public class CustomViewHolder {
     public void setBucket_link(String bucket_link) {
         this.bucket_link = bucket_link;
     }
+
 }

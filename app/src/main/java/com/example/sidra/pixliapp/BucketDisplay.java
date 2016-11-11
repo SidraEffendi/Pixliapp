@@ -66,6 +66,7 @@ public class BucketDisplay extends AppCompatActivity {
 
     //public static String[] result = new String[2];
     GridView gridview;
+    ImageAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,8 +84,9 @@ public class BucketDisplay extends AppCompatActivity {
         transferUtility = new TransferUtility(s3, getApplicationContext());
 
         gridview = (GridView) findViewById(R.id.gridview);
+        //adapter = new ImageAdapter(getApplicationContext());
 
-        ApiInterface apiService1 = ApiClient.getClient().create(ApiInterface.class);
+        ApiInterface apiService1 = ApiClient.createService(ApiInterface.class);
         Call<ResponseBody> call1 = apiService1.getCountOfPhotos(EVENT_ID);
         call1.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -102,6 +104,7 @@ public class BucketDisplay extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     PHOTO_COUNT =1;
+                    //gridview.invalidateViews(); //If this activity is removed then this line is not required
                     photoEntry();
 
                 }
@@ -161,6 +164,7 @@ public class BucketDisplay extends AppCompatActivity {
 
         if(requestCode == 123  && resultCode == RESULT_OK ) {
             System.out.println("INSIDE BUCKET AGAIN: "+ PHOTO_COUNT);
+            gridview.invalidateViews();
             photoEntry();
             //setImage(BucketDisplay.this, gridview, 1);
 
@@ -172,7 +176,7 @@ public class BucketDisplay extends AppCompatActivity {
 
     public void photoEntry(){
         // make a get call to get the image_url(names) of the photos having current Event_ID
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        ApiInterface apiService = ApiClient.createService(ApiInterface.class);
         Call<CustomViewPhotosResponse> call = apiService.getPhotosOfEvent(EVENT_ID);
         call.enqueue(new Callback<CustomViewPhotosResponse>() {
             @Override
@@ -256,7 +260,8 @@ public class BucketDisplay extends AppCompatActivity {
                 for(int j=0;j<result.size();j++) {
                     System.out.println("In Post Execute :" + result.get(j));
                 }
-
+                //adapter.notifyDataChanged();
+                //gridview.invalidateViews();
                 gridview.setAdapter(new ImageAdapter(context));
             }
         }.execute();
@@ -285,6 +290,7 @@ public class BucketDisplay extends AppCompatActivity {
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView;
+            //imageView = new ImageView(mContext);
 
             if (convertView == null) {
                 System.out.println("yoyoyoyooooooo");
@@ -295,7 +301,6 @@ public class BucketDisplay extends AppCompatActivity {
             }
             else
             {
-                System.out.println("rrrrr");
                 imageView = (ImageView) convertView;
             }
             //imageView.setImageResource(mThumbIds[position]);
