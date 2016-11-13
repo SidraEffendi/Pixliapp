@@ -10,6 +10,16 @@ import android.widget.Toast;
 
 import com.example.sidra.pixliapp.retrofit.ApiClient;
 import com.example.sidra.pixliapp.retrofit.ApiInterface;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -22,11 +32,17 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import com.facebook.FacebookSdk;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static android.widget.RelativeLayout.TRUE;
 import static com.example.sidra.pixliapp.MainActivity.CLICKED_CREVENT;
@@ -43,13 +59,24 @@ public class LoginActivity extends AppCompatActivity implements
 
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
     private GoogleApiClient mGoogleApiClient;
     private static final String CLIENT_ID = "";
     private static final String WEB_CLIENT_ID="312796068697-2vgqnsd95ukghbhj7uvael4oq48gt515.apps.googleusercontent.com";
 
+    CallbackManager callbackManager;
+    LoginButton loginButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /* Facebook sdk initialized before setting the layout view */
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(LoginActivity.this);
         setContentView(R.layout.login_activity);
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -84,12 +111,71 @@ public class LoginActivity extends AppCompatActivity implements
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-       /* mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .build();*/
+        /* This the code for facebook login */
+
+        callbackManager = CallbackManager.Factory.create();
+
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions(Arrays.asList(
+                "public_profile", "email"));
+        //loginButton.setReadPermissions("email");
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+                        AccessToken access_token;
+                        access_token = loginResult.getAccessToken();
+                        System.out.println(access_token.getToken());
+
+                       /* AccessToken token = AccessToken.getCurrentAccessToken();
+                        //AccessToken token = loginResult.getCurrentAccessToken();
+
+                        Log.d("Access Token is",String.valueOf(token));*/
+
+                        // App code
+                        GraphRequest request = GraphRequest.newMeRequest(
+                                access_token,
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(JSONObject object, GraphResponse response) {
+                                        Log.v("LoginActivity", response.toString());
+                                        // Application code
+                                        if (response != null) {
+                                            try {
+                                                String name = object.getString("name");
+                                                //String email = object.getString("email");
+
+                                                //Log.v("Email = ", " " + email);
+                                                System.out.println("Email = " + name);
+                                                //Toast.makeText(getApplicationContext(), "Name " + Name, Toast.LENGTH_LONG).show();
+
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                });
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id,name,email");
+                        request.setParameters(parameters);
+                        request.executeAsync();
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                    }
+                });
+
     }
 
     @Override
@@ -100,7 +186,7 @@ public class LoginActivity extends AppCompatActivity implements
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
             // and the GoogleSignInResult will be available instantly.
-            //Log.d(TAG, "Got cached sign-in");
+            Log.d(TAG, "Got cached sign-in");
             System.out.println("inside to check if already logged in");
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
@@ -124,6 +210,8 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        callbackManager.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -277,7 +365,10 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+    // [START getToken]
     public void getToken(final String email_Id, final String displayName){
+
+        // Api call to exchange email_Id and displayName for a token
         ApiInterface apiService1 = ApiClient.createService(ApiInterface.class,email_Id,displayName);
         Call<ResponseBody> call1 = apiService1.getToken();
         call1.enqueue(new Callback<ResponseBody>() {
@@ -288,23 +379,24 @@ public class LoginActivity extends AppCompatActivity implements
                 Log.e("INSIDE GET TOKEN", "Response: " + statuscode);
 
                 if (response.body() != null) {
-                    // Get the image urls from the response body and store it in an array mThumbIds
-                    //PHOTO_COUNT =1;
+
                     try {
                         System.out.println("CHECK HERE" + response.body().string());
 
-                        // Mark the user the user has successfully logged in
+                        // Mark that the user has successfully logged in
                         SharedPreferences.Editor editor = app_preferences.edit();
                         editor.putInt("LOGGED_IN", ++LOGGED_IN);
                         editor.commit(); // Very important
 
-                        if (CLICKED_CREVENT == 1) {
+                        if (CLICKED_CREVENT == 1) {     //CLICKED_CREVENT declared in MainActivity.java
+                            /* Start Intent for Events class to fill in event detail. */
                             Intent myIntent = new Intent(LoginActivity.this, Events.class);
                             myIntent.putExtra("email_Id", email_Id);
                             LoginActivity.this.startActivity(myIntent);
                             finish();
                         }
                         else{
+                            /* Start Intent for the event_Id entered by guest in MainActiviyt. */
                             Intent myIntent = new Intent(LoginActivity.this, Event_List.class);
                             myIntent.putExtra("email_Id", email_Id);
                             LoginActivity.this.startActivity(myIntent);
@@ -326,4 +418,5 @@ public class LoginActivity extends AppCompatActivity implements
         });
 
     }
+    // [END getToken]
 }

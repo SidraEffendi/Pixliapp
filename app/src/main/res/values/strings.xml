@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Pixliapp</string>
+    <string name="facebook_app_id">1792768987646661</string>
+    <string name="fb_login_protocol_scheme">fb1792768987646661</string>
 </resources>

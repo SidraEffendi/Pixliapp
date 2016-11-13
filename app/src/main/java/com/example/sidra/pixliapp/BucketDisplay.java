@@ -73,6 +73,7 @@ public class BucketDisplay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bucket_display_fab);
 
+        // Setting up credentials of s3 bucket
         credentialsProvider = new CognitoCachingCredentialsProvider(
                 getApplicationContext(),    /* get the context for the application */
                 "ap-northeast-1:2c9313f6-ef22-44e7-bdb3-2a41f5b155a3",    /* Identity Pool ID */
@@ -81,11 +82,12 @@ public class BucketDisplay extends AppCompatActivity {
 
         s3 = new AmazonS3Client(credentialsProvider);
         s3.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
-        transferUtility = new TransferUtility(s3, getApplicationContext());
+        transferUtility = new TransferUtility(s3, getApplicationContext());  //Required for upload and download from s3 bucket
 
         gridview = (GridView) findViewById(R.id.gridview);
         //adapter = new ImageAdapter(getApplicationContext());
 
+        /*call to the database to check the no.of photos for the event*/
         ApiInterface apiService1 = ApiClient.createService(ApiInterface.class);
         Call<ResponseBody> call1 = apiService1.getCountOfPhotos(EVENT_ID);
         call1.enqueue(new Callback<ResponseBody>() {
@@ -96,25 +98,25 @@ public class BucketDisplay extends AppCompatActivity {
                 Log.e("Getting no.of Photos", "Response: "+statuscode);
 
                 if (response.body() != null){
-                    // Get the image urls from the response body and store it in an array mThumbIds
-                    //PHOTO_COUNT =1;
+
+                    PHOTO_COUNT =1;   /* This flag means the event photo folder is not empty */
+                    photoEntry();     /* Function call to display the photos */
+
                     try {
                         System.out.println("CHECK HERE"+response.body().string());
                     }catch (IOException e) {
                         e.printStackTrace();
                     }
-                    PHOTO_COUNT =1;
+
                     //gridview.invalidateViews(); //If this activity is removed then this line is not required
-                    photoEntry();
+
 
                 }
                 else{
                     Log.e("Error",""+statuscode+ "......"+ "....null body");
                     Toast.makeText(getApplicationContext(), "Add images to your event", Toast.LENGTH_LONG).show();
                 }
-
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call1,Throwable t) {
                 t.printStackTrace();
@@ -129,10 +131,12 @@ public class BucketDisplay extends AppCompatActivity {
         }*/
         //gridview.setAdapter(new ImageAdapter(this));
 
+        /*the gridview is made responsive to click on a photo*/
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
                 //PHOTO_COUNT = 1;
+                //click action
                 Intent intent= new Intent(BucketDisplay.this,PhotoActivity.class);
                 intent.putExtra("position",position);
                 BucketDisplay.this.startActivity(intent);
@@ -140,12 +144,12 @@ public class BucketDisplay extends AppCompatActivity {
 
         });
 
+        /*fab button for uploading photos from gallery (or camera - to be implemented)*/
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Click action
-
                 Intent myIntent = new Intent(BucketDisplay.this,UploadActivity.class);
                 startActivityForResult(myIntent,123);
             }
@@ -157,15 +161,19 @@ public class BucketDisplay extends AppCompatActivity {
         super.onStart();
     }
 
+    // [START onActivityResult]
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
+        /* Result returned from launching UploadActivity.java intent from Gridview.OnClickListener.*/
         if(requestCode == 123  && resultCode == RESULT_OK ) {
+
+            /* If uploading photo to S3 bucket has been success full. */
             System.out.println("INSIDE BUCKET AGAIN: "+ PHOTO_COUNT);
-            gridview.invalidateViews();
-            photoEntry();
+
+            gridview.invalidateViews();   /* To invalidate view before photo upload. */
+            photoEntry();                 /* Function call to display the photos. */
             //setImage(BucketDisplay.this, gridview, 1);
 
         }
@@ -173,9 +181,11 @@ public class BucketDisplay extends AppCompatActivity {
             System.out.println("SOMETHING MISSING");
         }
     }
+    // [END onActivityResult]
 
+    // [Start photoEntry]
     public void photoEntry(){
-        // make a get call to get the image_url(names) of the photos having current Event_ID
+        /* make an api call to get the image_url(names) of the photos having current Event_ID. */
         ApiInterface apiService = ApiClient.createService(ApiInterface.class);
         Call<CustomViewPhotosResponse> call = apiService.getPhotosOfEvent(EVENT_ID);
         call.enqueue(new Callback<CustomViewPhotosResponse>() {
@@ -186,7 +196,8 @@ public class BucketDisplay extends AppCompatActivity {
                 Log.e("BucketDisplayGetCall", "Response: "+statuscode);
 
                 if (customViewPhotosHolders != null){
-                    // Get the image urls from the response body and store it in an array mThumbIds
+
+                    /* Get the image urls (name) from the response body and store it in an array 'mThumbIds1'. */
                     PHOTO_COUNT =1;
                     System.out.println("photos exist");
                     List<String> images = new ArrayList<String>();
@@ -201,6 +212,8 @@ public class BucketDisplay extends AppCompatActivity {
                     }
                     Log.e("BucketDisplaySize:", ""+photoSize);
                     Log.e("BucketDisplaySize:", FOLDER_NAME);
+
+                    /*Function call to display images in the gridview. */
                     setImage(BucketDisplay.this, gridview, 1);
                 }
                 else{
@@ -215,6 +228,9 @@ public class BucketDisplay extends AppCompatActivity {
             }
         });
     }
+    // [END photoEntry]
+
+    // [START setImage]
     private void setImage(final Context context,final ViewGroup parent, final int id) {
 
 
@@ -225,23 +241,25 @@ public class BucketDisplay extends AppCompatActivity {
 
                 try {
 
-                    //In mThumbsId1 the name of the images from the database will be stored
+                    /* URL is generated for the each image in the S3 bucket*/
                     //for(int i=0;i< imagesName.length;i++) {
                     Log.e("URL: ", "started");
                     for(int i=0;i< photoSize;i++) {
-                        //Extending the expiry time for photto remission
+
+                        //Extending the expiry time for photo remission
                         java.util.Date expiration = new java.util.Date();
                         long msec = expiration.getTime();
                         msec += 1000 * 60 * 60; // 1 hour.
                         expiration.setTime(msec);
 
-                        //generating uri for image in S3 bucket
+                        /* Generating uri for image in S3 bucket. */
                         Log.e("URL:", mThumbIds1.get(i));
                         GeneratePresignedUrlRequest generatePresignedUrlRequest =
                                 new GeneratePresignedUrlRequest("pixliapp01", mThumbIds1.get(i));
                         generatePresignedUrlRequest.setMethod(HttpMethod.GET); // Default.
                         generatePresignedUrlRequest.setExpiration(expiration);
 
+                        /* Uri is converted to url. */
                         URL ss = s3.generatePresignedUrl(generatePresignedUrlRequest);
                         System.out.println("THE URL" + ss);
                         result.add(ss.toString());
@@ -262,10 +280,13 @@ public class BucketDisplay extends AppCompatActivity {
                 }
                 //adapter.notifyDataChanged();
                 //gridview.invalidateViews();
+
+                /* ImageAdapter is called to view the images. */
                 gridview.setAdapter(new ImageAdapter(context));
             }
         }.execute();
     }
+    // [END setImage]
 
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
@@ -287,7 +308,7 @@ public class BucketDisplay extends AppCompatActivity {
             return 0;
         }
 
-        // create a new ImageView for each item referenced by the Adapter
+         /*create a new ImageView for each item referenced by the Adapter*/
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView;
             //imageView = new ImageView(mContext);
@@ -305,6 +326,8 @@ public class BucketDisplay extends AppCompatActivity {
             }
             //imageView.setImageResource(mThumbIds[position]);
             System.out.println("iiiiiiiiii");
+
+            /* Loading the images to gridview using Picasso library. */
             Picasso.with(mContext)
                     .load(result.get(position))
                     .placeholder(R.drawable.s_9)

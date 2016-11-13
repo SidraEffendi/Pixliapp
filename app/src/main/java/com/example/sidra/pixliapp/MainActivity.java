@@ -4,9 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +23,8 @@ import com.example.sidra.pixliapp.retrofit.ApiClient;
 import com.example.sidra.pixliapp.retrofit.ApiInterface;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -26,11 +32,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /*
  *The main activity reacts on clicking the buttons guest login and create event. On Clicking create event  button
- * the Events.java activity will open up and  on clicking the guest login button, user will be asked for unique event code
-  * and code entered will be stored in the static variable EVENT_ID and BucketDisplay.java activity will be started.
+ * the Event_List.java activity will open up if the user is logged in else LoginActivity.java will open.
+ * On clicking the guest login button, user will be asked for unique event code and code entered will be
+ * stored in the static variable EVENT_ID and BucketDisplay.java activity will be started.
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -54,11 +62,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.example.sidra.fb_login", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                //System.out.println("YourKeyHash: "+ Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }*/
+
         // Get the app's shared preferences to keep track of user's activity in the app
         app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        LOGGED_IN = app_preferences.getInt("LOGGED_IN",0);                     //To check is user has already logged in
-        CLICKED_CREVENT = app_preferences.getInt("CLICKED_CREVENT",0);         //To track if user clicked Create event button
-                                                                               // or 'already member' link and take action accordingly
+        LOGGED_IN = app_preferences.getInt("LOGGED_IN",0);                /*To check is user has already logged in (from MainActivity).*/
+        CLICKED_CREVENT = app_preferences.getInt("CLICKED_CREVENT",0);    /*To track if user clicked Create event button or 'already member'
+                                                                             link and take action accordingly (from MainActivity).*/
         System.out.println("logged in :" + LOGGED_IN);
 
         //----- When create event button is clicked user is directed to Events java class -----//
@@ -68,12 +91,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // --- It is checked if the user is logged in --
 
-            if(LOGGED_IN == 0) {     //This value is supposed to be 0. Keep = 1 during debugging login section.
+            if(TRUE) {     //This value is supposed to be 0. Keep = 1 during debugging login section. LOGGED_IN == 0
 
-                //User is directed to login page
+                /* Mark that create event button has been clicked to later direct the user to filling event details */
                 CLICKED_CREVENT = app_preferences.getInt("CLICKED_CREVENT",1); //set this value again to 0 when already member is clicked
                 System.out.println("logged in :" + CLICKED_CREVENT);
 
+                /* User is directed to login page since value is set to 0. */
                 Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
                 MainActivity.this.startActivity(myIntent);
             }
@@ -109,13 +133,13 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
 
-                                // Get the event id entered in the dialog box.
-                                Event_idd = (EditText) v_iew.findViewById(R.id.Event_idd);  //Find ViewById is called on v_iew because
-                                                                                            //it is inside the dialog box
+                                /* Get the event id entered in the dialog box. */
+                                Event_idd = (EditText) v_iew.findViewById(R.id.Event_idd);  /*Find ViewById is called on v_iew because
+                                                                                            it is inside the dialog box */
                                 System.out.println("Pressed code enter");
                                 EVENT_ID= Event_idd.getText().toString();
 
-                                //api call is made to check if the entered event code exists
+                                /*api call is made to check if the entered event code exists. */
                                 ApiInterface apiService1 = ApiClient.createService(ApiInterface.class);
                                 Call<ResponseBody> call1 = apiService1.getEventsExits(EVENT_ID);
                                 call1.enqueue(new Callback<ResponseBody>() {
@@ -126,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                                         Log.e("Check Event existence", "Response: "+statuscode);
                                         if (response.body() != null){
 
-                                            // the BucketDisplay.java file is opened to display photos of event
+                                            /* the BucketDisplay.java file is opened to display photos of event. */
                                             FOLDER_NAME = "img"+EVENT_ID;
                                             Intent myIntent = new Intent(MainActivity.this, BucketDisplay.class);
                                             MainActivity.this.startActivity(myIntent);

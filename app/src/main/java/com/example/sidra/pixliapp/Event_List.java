@@ -17,12 +17,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.sidra.pixliapp.MainActivity.EVENT_ID;
 import static com.example.sidra.pixliapp.MainActivity.PHOTO_COUNT;
 
 /**
  * Created by sidra on 02-11-2016.
  *
  * This Activity is responsible for showing the list of events related to the user account (as admin and as guest).
+ * When an event code is clicked, EVENT_ID is set to that code and photos for it are displayed in BucketDisplay.java
  */
 
 public class Event_List extends Activity{
@@ -53,7 +55,10 @@ public class Event_List extends Activity{
                     hosted_events = response.body().getHosted_events();
                     guest_code_ids = response.body().getGuest_code_id();
 
-                    PHOTO_COUNT =1;
+                    Log.e("Hosted_events  :  ", hosted_events.get(1));
+                    Log.e("Guest_events  :  ", guest_code_ids.get(1));
+
+                    PHOTO_COUNT =1;     /* static variable declared in MainActiviyt.java*/
 
                     //Display the list of events
                     displayEventList();
@@ -69,7 +74,8 @@ public class Event_List extends Activity{
             }
         });
 
-
+        // Set the EVENT_ID= the one user clicked and start the BucketDispay file
+        EVENT_ID = "ASP1";
         Intent myIntent = new Intent(Event_List.this, BucketDisplay.class);
         Event_List.this.startActivity(myIntent);
     }

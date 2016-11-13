@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by sidra on 25-10-2016.
+ *
+ * This file holds the json format for the Photos table of database.
  */
 
 public class CustomViewPhotosHolder {

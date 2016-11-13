@@ -1,41 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.sidra.pixliapp.MainActivity">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/final_bg"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp">
 
-        <Button
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GUEST LOGIN"
-            android:id="@+id/Guest"
-            android:layout_below="@+id/Create"
-            android:layout_alignRight="@+id/Create"
-            android:layout_alignEnd="@+id/Create"
-            android:layout_marginTop="99dp" />
+            android:src="@drawable/pixli_font"
+            android:layout_gravity="center"
+            android:paddingTop="60dp"
+            android:paddingBottom="30dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            >
 
-        <Button
+        </LinearLayout>
+
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create Event"
+            android:textSize="20sp"
+            android:text="Already Member?"
+            android:textColor="@color/whiteCol"
+            android:layout_gravity="right"
+            android:paddingBottom="10dp"/>
+        <Button
             android:id="@+id/Create"
-            android:layout_marginTop="61dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-    </RelativeLayout>
-</RelativeLayout>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/shape"
+            android:text="Create Event"
+            android:textSize="18sp"
+            android:textColor="@android:color/white" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            >
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/Guest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/shape"
+            android:text="Guest Login"
+            android:textSize="18sp"
+            android:textColor="@android:color/white" />
+
+
+    </LinearLayout>
+
+
+</FrameLayout>

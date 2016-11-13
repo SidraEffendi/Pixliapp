@@ -21,6 +21,10 @@ import android.widget.Toast;
 
 /**
  * Created by sidra on 23-10-2016.
+ *
+ * This Activity opens up from the uploadActivity to view custom gallery which contains the images of the phone
+ * and checkbox to select the images for upload. The images selected are collected in an array and returned to the
+ * UploadActivity.
  */
 
 public class GActivity extends Activity {
@@ -46,16 +50,17 @@ public class GActivity extends Activity {
         super.onCreate(savedInstanceState);
         Log.i("my Main", "hi");
         setContentView(R.layout.custom_gallery);
+
+        /* The girdview has images, a checkbox with each image and a button */
         grdImages= (GridView) findViewById(R.id.grdImages);
         btnSelect= (Button) findViewById(R.id.btnSelect);
         context= getApplicationContext();
 
         final String[] columns = { MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID };
         final String orderBy = MediaStore.Images.Media._ID;
-
         //"com.android.externalstorage.documents".equals(uri.getAuthority())
 
-        //Cursor imagecursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
+        /* This section gets all the images in the phone */
         Ccursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
         Log.i("my Main", "after cursor");
         int image_column_index = Ccursor.getColumnIndex(MediaStore.Images.Media._ID);
@@ -70,14 +75,17 @@ public class GActivity extends Activity {
             arrPath[i] = Ccursor.getString(dataColumnIndex);
         }
 
+        /* The Adapter for the gridview is called */
         imageAdapter = new ImageAdapter();
         grdImages.setAdapter(imageAdapter);
         Ccursor.close();
 
-
+        /* On clicking the select button of custom_gallery.xml */
         btnSelect.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
+
+                /* the path of the images selected in the gridview is put in an array */
                 final int len = thumbnailsselection.length;
                 int cnt = 0;
                 String selectImages = "";
@@ -91,11 +99,12 @@ public class GActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "Please select at least one image", Toast.LENGTH_LONG).show();
                 } else {
 
+                    /* This array of image paths is returned to the UploadActivity.java */
                     Log.d("SelectedImages", selectImages);
                     Intent i = new Intent();
                     i.putExtra("data", selectImages);
                     setResult(Activity.RESULT_OK, i);
-                    finish();
+                    finish();                          /* GActivity is removed from the stack as its work has completed. */
                 }
             }
         });
@@ -121,6 +130,7 @@ public class GActivity extends Activity {
 
         new AsyncTask<Void, Void, Bitmap>() {
 
+            /* Creates thumbnail of images asynchrounously from main thread. */
             @Override
             protected Bitmap doInBackground(Void... params) {
                 return MediaStore.Images.Thumbnails.getThumbnail(getApplicationContext().getContentResolver(), id, MediaStore.Images.Thumbnails.MICRO_KIND, null);
@@ -159,6 +169,9 @@ public class GActivity extends Activity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
+
+            /* The thumbnail of all the images in the phone are put up in the gridview with checkboxes  */
+
             final ViewHolder holder;
             if (convertView == null) {
                 holder = new ViewHolder();
