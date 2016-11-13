@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.sidra.pixliapp.retrofit.ApiClient;
@@ -70,6 +71,8 @@ public class LoginActivity extends AppCompatActivity implements
     CallbackManager callbackManager;
     LoginButton loginButton;
 
+    String email_Id,displayName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,8 +83,8 @@ public class LoginActivity extends AppCompatActivity implements
         setContentView(R.layout.login_activity);
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
+//        findViewById(R.id.sign_out_button).setOnClickListener(this);
+//        findViewById(R.id.disconnect_button).setOnClickListener(this);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -100,10 +103,10 @@ public class LoginActivity extends AppCompatActivity implements
         // may be displayed when only basic profile is requested. Try adding the
         // Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
         // difference.
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        ImageView signInButton = (ImageView) findViewById(R.id.sign_in_button);
+        /*signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(gso.getScopeArray());
-
+*/
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -116,6 +119,8 @@ public class LoginActivity extends AppCompatActivity implements
         callbackManager = CallbackManager.Factory.create();
 
         loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setBackgroundResource(R.drawable.login_with_f);
+        loginButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         loginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email"));
         //loginButton.setReadPermissions("email");
@@ -128,12 +133,6 @@ public class LoginActivity extends AppCompatActivity implements
                         AccessToken access_token;
                         access_token = loginResult.getAccessToken();
                         System.out.println(access_token.getToken());
-
-                       /* AccessToken token = AccessToken.getCurrentAccessToken();
-                        //AccessToken token = loginResult.getCurrentAccessToken();
-
-                        Log.d("Access Token is",String.valueOf(token));*/
-
                         // App code
                         GraphRequest request = GraphRequest.newMeRequest(
                                 access_token,
@@ -145,12 +144,16 @@ public class LoginActivity extends AppCompatActivity implements
                                         if (response != null) {
                                             try {
                                                 String name = object.getString("name");
-                                                //String email = object.getString("email");
+                                                String email = object.getString("email");
 
-                                                //Log.v("Email = ", " " + email);
-                                                System.out.println("Email = " + name);
-                                                //Toast.makeText(getApplicationContext(), "Name " + Name, Toast.LENGTH_LONG).show();
+                                                System.out.println("Email = " + email);
+                                                System.out.println("Name = " + name);
 
+                                                email_Id = email;
+                                                displayName = name;
+
+                                                /* call to function */
+                                                userDataEntry();
 
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
@@ -228,44 +231,17 @@ public class LoginActivity extends AppCompatActivity implements
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-            final String displayName = acct.getDisplayName();
+            displayName = acct.getDisplayName();
             System.out.println(displayName);
             //String idToken = result.getSignInAccount().getIdToken();
             String authCode = acct.getServerAuthCode();
             //var id_token = acct.getAuthResponse().id_token;
-            //System.out.println(idToken);
             System.out.println(authCode);
-            final String email_Id = acct.getEmail();
+            email_Id = acct.getEmail();
             System.out.println(email_Id);
 
-            ApiInterface apiService = ApiClient.createService(ApiInterface.class);
-            Call<Void> call1 = apiService.createUsers(displayName,email_Id);
-            call1.enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call1, Response<Void> respo) {
-                    int statuscode = respo.code();
-
-                    Log.d("Message", "code..." + respo.code() + " message..." + respo.message());
-                    System.out.println("Calling getToken");
-                    getToken(email_Id,displayName);
-
-                    Void respon = respo.body();
-
-                    if (respon == null) {
-                        Log.e("Error", "" + statuscode + "......" + respo.message() + "....null body");
-                    }
-                    else{
-                        //System.out.println("Calling getToken");
-                        //getToken();
-                    }
-                }
-                @Override
-                public void onFailure(Call<Void> call1, Throwable t) {
-
-                    Log.e(TAG, t.toString());
-                }
-            });
+            /* call to function */
+            userDataEntry();
 
             updateUI(true);
         } else {
@@ -338,14 +314,14 @@ public class LoginActivity extends AppCompatActivity implements
     private void updateUI(boolean signedIn) {
         if (signedIn) {
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.disconnect_button).setVisibility(View.VISIBLE);
+//            findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
+//            findViewById(R.id.disconnect_button).setVisibility(View.VISIBLE);
         } else {
             //mStatusTextView.setText(R.string.signed_out);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
-            findViewById(R.id.disconnect_button).setVisibility(View.GONE);
+//            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+//            findViewById(R.id.disconnect_button).setVisibility(View.GONE);
         }
     }
 
@@ -356,14 +332,48 @@ public class LoginActivity extends AppCompatActivity implements
             case R.id.sign_in_button:
                 signIn();
                 break;
-            case R.id.sign_out_button:
-                signOut(v);
-                break;
-            case R.id.disconnect_button:
-                revokeAccess(v);
-                break;
+//            case R.id.sign_out_button:
+//                signOut(v);
+//                break;
+//            case R.id.disconnect_button:
+//                revokeAccess(v);
+//                break;
         }
     }
+
+    // [START userDataEntry]
+    public void userDataEntry(){
+
+        /* Api call to send user data to the database (creates user id if not already existing). */
+        ApiInterface apiService = ApiClient.createService(ApiInterface.class);
+        Call<Void> call1 = apiService.createUsers(displayName,email_Id);
+        call1.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call1, Response<Void> respo) {
+                int statuscode = respo.code();
+
+                Log.d("Message", "code..." + respo.code() + " message..." + respo.message());
+                System.out.println("Calling getToken");
+                getToken(email_Id,displayName);
+
+                Void respon = respo.body();
+
+                if (respon == null) {
+                    Log.e("Error", "" + statuscode + "......" + respo.message() + "....null body");
+                }
+                else{
+                    //System.out.println("Calling getToken");
+                    //getToken();
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call1, Throwable t) {
+
+                Log.e(TAG, t.toString());
+            }
+        });
+    }
+    // [END userDataEntry]
 
     // [START getToken]
     public void getToken(final String email_Id, final String displayName){
@@ -419,4 +429,5 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
     // [END getToken]
+
 }

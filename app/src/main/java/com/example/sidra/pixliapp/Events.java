@@ -1,20 +1,36 @@
 package com.example.sidra.pixliapp;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.usage.UsageEvents;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import com.example.sidra.pixliapp.retrofit.ApiClient;
 import com.example.sidra.pixliapp.retrofit.ApiInterface;
 
+import java.util.Calendar;
 import java.util.UUID;
 
 import retrofit2.Call;
@@ -40,28 +56,76 @@ import static java.lang.Boolean.TRUE;
 
 public class Events extends AppCompatActivity {
 
-    EditText EventType, AlbumName, EventDate, EventLocation;
-    Button Next,Ok;
+    EditText  AlbumName, EventLocation;
+    Button Ok;
+    ImageView Next;
     AlertDialog.Builder alertDialogBuilder;
     AlertDialog alertDialog;
     String code;
     String temp;
 
 
+// variables for calendar and event dropdown
+    private DatePicker datePicker;
+    private Calendar calendar;
+    private TextView  EventDate;
+    private int year, month, day;
+    private Spinner EventType;
+
+    Calendar myCalendar = Calendar.getInstance();
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_detail);
+        addListenerOnSpinnerItemSelection();
+
+
+        Resources resources = getResources();
+
+        // Initializing an ArrayAdapter
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                Events.this, R.layout.spinner_item, resources.getStringArray(R.array.album_type)
+        );
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        EventType.setAdapter(spinnerArrayAdapter);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+
+
+        EventDate = (TextView) findViewById(R.id.EventDate);
+        calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        showDate(year, month+1, day);
+
+
+
+
+        //code to hide auto input box popup
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 
         //
-        EventType = (EditText) findViewById(R.id.EventType);
+        EventType = (Spinner) findViewById(R.id.EventType);
         AlbumName = (EditText) findViewById(R.id.AlbumName);
-        EventDate = (EditText) findViewById(R.id.EventDate);
+       // EventDate = (EditText) findViewById(R.id.EventDate);
         EventLocation = (EditText) findViewById(R.id.EventLocation);
 
         //----- When Next button is clicked a unique code is generated, displayed to the user and all the data is saved into postgreSQL db if valid ------//
 
-        Next = (Button) findViewById(R.id.Next);
+        Next = (ImageView) findViewById(R.id.Next);
         Next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -97,7 +161,7 @@ public class Events extends AppCompatActivity {
                         /////    get the entered event details from the xml
                         CustomViewHolder ab = new CustomViewHolder();            //creating object of CustomViewHolder type
                         ab.setCode_id(code);
-                        ab.setEvent_type(EventType.getText().toString());
+                        ab.setEvent_type(EventType.getSelectedItem().toString());
                         ab.setAlbum_name(AlbumName.getText().toString());
                         ab.setEvent_date(EventDate.getText().toString());
                         ab.setEvent_loc(EventLocation.getText().toString());
@@ -143,5 +207,84 @@ public class Events extends AppCompatActivity {
                 });
             }
         });
+    }
+
+
+    @SuppressWarnings("deprecation")
+    public void setDate(View view) {
+        showDialog(999);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        // TODO Auto-generated method stub
+        if (id == 999) {
+            return new DatePickerDialog(this,
+                    myDateListener, year, month, day);
+        }
+        return null;
+    }
+
+    private DatePickerDialog.OnDateSetListener myDateListener = new
+            DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker arg0,
+                                      int arg1, int arg2, int arg3) {
+                    // TODO Auto-generated method stub
+                    // arg1 = year
+                    // arg2 = month
+                    // arg3 = day
+                    showDate(arg1, arg2+1, arg3);
+                }
+            };
+
+    private void showDate(int year, int month, int day) {
+        EventDate.setText(new StringBuilder().append(day).append("/")
+                .append(month).append("/").append(year));
+    }
+
+
+
+
+    public void addListenerOnSpinnerItemSelection() {
+       EventType  = (Spinner) findViewById(R.id.EventType);
+        EventType.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+    }
+
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("CreateEvent Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 }

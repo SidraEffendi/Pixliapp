@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/final_bg"/>
+        android:src="@drawable/front_bg"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,16 +19,23 @@
         android:paddingLeft="50dp"
         android:paddingRight="50dp">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pixli_font"
-            android:layout_gravity="center"
-            android:paddingTop="60dp"
-            android:paddingBottom="30dp"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
+            >
+
+        </LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:src="@drawable/pixli_font"
+            android:layout_gravity="center"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             >
 
         </LinearLayout>
@@ -50,7 +57,7 @@
             android:layout_marginTop="5dp"
             android:background="@drawable/shape"
             android:text="Create Event"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@android:color/white" />
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,8 +72,9 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:background="@drawable/shape"
+            android:onClick="openCreateEvent"
             android:text="Guest Login"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@android:color/white" />
 
 
@@ -74,3 +82,5 @@
 
 
 </FrameLayout>
+
+

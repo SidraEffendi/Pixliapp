@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">Pixliapp</string>
     <string name="facebook_app_id">1792768987646661</string>
+    <string name="title_activity_login">Login</string>
+    <string name="terms">By signing up, I agree to Pixli\'s terms and conditons, privacy policies and community guidelines.</string>
+    <string name="album_heading">Choose a country</string>
     <string name="fb_login_protocol_scheme">fb1792768987646661</string>
+    <string-array name="album_type">
+        <item>Wedding</item>
+        <item>Travel</item>
+        <item>Party</item>
+        <item>Other</item>
+
+    </string-array>
 </resources>
