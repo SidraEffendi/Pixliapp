@@ -26,7 +26,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -45,7 +44,6 @@ import com.facebook.FacebookSdk;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static android.widget.RelativeLayout.TRUE;
 import static com.example.sidra.pixliapp.MainActivity.CLICKED_CREVENT;
 import static com.example.sidra.pixliapp.MainActivity.LOGGED_IN;
 import static com.example.sidra.pixliapp.MainActivity.app_preferences;
@@ -399,8 +397,8 @@ public class LoginActivity extends AppCompatActivity implements
                         editor.commit(); // Very important
 
                         if (CLICKED_CREVENT == 1) {     //CLICKED_CREVENT declared in MainActivity.java
-                            /* Start Intent for Events class to fill in event detail. */
-                            Intent myIntent = new Intent(LoginActivity.this, Events.class);
+                            /* Start Intent for EventsCreate class to fill in event detail. */
+                            Intent myIntent = new Intent(LoginActivity.this, EventsCreate.class);
                             myIntent.putExtra("email_Id", email_Id);
                             LoginActivity.this.startActivity(myIntent);
                             finish();

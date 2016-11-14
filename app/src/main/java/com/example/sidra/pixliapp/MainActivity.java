@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                                                                              link and take action accordingly (from MainActivity).*/
         System.out.println("logged in :" + LOGGED_IN);
 
-        //----- When create event button is clicked user is directed to Events java class -----//
+        //----- When create event button is clicked user is directed to EventsCreate java class -----//
         CreateEvent = (Button) findViewById(R.id.Create);
         //Toast.makeText(getApplicationContext(), "Create clicked", Toast.LENGTH_SHORT).show();
         CreateEvent.setOnClickListener(new View.OnClickListener() {

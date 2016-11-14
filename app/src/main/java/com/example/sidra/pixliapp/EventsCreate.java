@@ -3,7 +3,6 @@ package com.example.sidra.pixliapp;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.usage.UsageEvents;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -39,7 +38,6 @@ import retrofit2.Response;
 
 import static com.example.sidra.pixliapp.MainActivity.EVENT_ID;
 import static com.example.sidra.pixliapp.MainActivity.FOLDER_NAME;
-import static java.lang.Boolean.TRUE;
 
 /**
  * Created by sidra on 20-10-2016.
@@ -54,11 +52,11 @@ import static java.lang.Boolean.TRUE;
  *
  */
 
-public class Events extends AppCompatActivity {
+public class EventsCreate extends AppCompatActivity {
 
-    EditText  AlbumName, EventLocation;
-    Button Ok;
-    ImageView Next;
+    EditText  albumName, eventLocation;
+    Button ook;
+    ImageView next;
     AlertDialog.Builder alertDialogBuilder;
     AlertDialog alertDialog;
     String code;
@@ -68,9 +66,9 @@ public class Events extends AppCompatActivity {
 // variables for calendar and event dropdown
     private DatePicker datePicker;
     private Calendar calendar;
-    private TextView  EventDate;
+    private TextView  eventDate;
     private int year, month, day;
-    private Spinner EventType;
+    private Spinner eventType;
 
     Calendar myCalendar = Calendar.getInstance();
     /**
@@ -91,17 +89,17 @@ public class Events extends AppCompatActivity {
 
         // Initializing an ArrayAdapter
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
-                Events.this, R.layout.spinner_item, resources.getStringArray(R.array.album_type)
+                EventsCreate.this, R.layout.spinner_item, resources.getStringArray(R.array.album_type)
         );
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
-        EventType.setAdapter(spinnerArrayAdapter);
+        eventType.setAdapter(spinnerArrayAdapter);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
 
 
-        EventDate = (TextView) findViewById(R.id.EventDate);
+        eventDate = (TextView) findViewById(R.id.EventDate);
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
 
@@ -118,15 +116,15 @@ public class Events extends AppCompatActivity {
 
 
         //
-        EventType = (Spinner) findViewById(R.id.EventType);
-        AlbumName = (EditText) findViewById(R.id.AlbumName);
+        eventType = (Spinner) findViewById(R.id.EventType);
+        albumName = (EditText) findViewById(R.id.AlbumName);
        // EventDate = (EditText) findViewById(R.id.EventDate);
-        EventLocation = (EditText) findViewById(R.id.EventLocation);
+        eventLocation = (EditText) findViewById(R.id.EventLocation);
 
         //----- When Next button is clicked a unique code is generated, displayed to the user and all the data is saved into postgreSQL db if valid ------//
 
-        Next = (ImageView) findViewById(R.id.Next);
-        Next.setOnClickListener(new View.OnClickListener() {
+        next = (ImageView) findViewById(R.id.Next);
+        next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 //generating a random unique code
@@ -142,8 +140,8 @@ public class Events extends AppCompatActivity {
                 //code = "ASP333";
 
                 // A Dialog box is created which shows the generated unique event id
-                alertDialogBuilder = new AlertDialog.Builder(Events.this);               //creating a dialog box
-                LayoutInflater inflater = Events.this.getLayoutInflater();               // Inflate and set the layout for the dialog
+                alertDialogBuilder = new AlertDialog.Builder(EventsCreate.this);               //creating a dialog box
+                LayoutInflater inflater = EventsCreate.this.getLayoutInflater();               // Inflate and set the layout for the dialog
                 View v_iew=inflater.inflate(R.layout.code_display, null);                // Pass null as the parent view because its going in the dialog layout
                 alertDialogBuilder.setView(v_iew);
                 TextView CodeDisplay = (TextView) v_iew.findViewById(R.id.CodeDisplay);  //Displaying the unique ID to user
@@ -153,18 +151,18 @@ public class Events extends AppCompatActivity {
                 alertDialog.show();
 
 
-                Ok = (Button) v_iew.findViewById(R.id.Ok);
-                Ok.setOnClickListener(new View.OnClickListener() {
+                ook = (Button) v_iew.findViewById(R.id.Ok);
+                ook.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                      //-----Post all data to the flask api for entry in postgreSQl db-----//
 
                         /////    get the entered event details from the xml
                         CustomViewHolder ab = new CustomViewHolder();            //creating object of CustomViewHolder type
                         ab.setCode_id(code);
-                        ab.setEvent_type(EventType.getSelectedItem().toString());
-                        ab.setAlbum_name(AlbumName.getText().toString());
-                        ab.setEvent_date(EventDate.getText().toString());
-                        ab.setEvent_loc(EventLocation.getText().toString());
+                        ab.setEvent_type(eventType.getSelectedItem().toString());
+                        ab.setAlbum_name(albumName.getText().toString());
+                        ab.setEvent_date(eventDate.getText().toString());
+                        ab.setEvent_loc(eventLocation.getText().toString());
                         temp = "img"+code;
                         ab.setBucket_link(temp);
                         String email_Id = getIntent().getStringExtra("email_Id");
@@ -188,8 +186,8 @@ public class Events extends AppCompatActivity {
                                     Log.e("Success",""+statuscode+ "......"+ respo.message()+"vvvvv body exists");
                                     EVENT_ID=code;
                                     FOLDER_NAME = temp;
-                                    Intent myIntent = new Intent(Events.this, Event_List.class);
-                                    Events.this.finish();
+                                    Intent myIntent = new Intent(EventsCreate.this, Event_List.class);
+                                    EventsCreate.this.finish();
                                     startActivity(myIntent);
                                 }
 
@@ -239,16 +237,16 @@ public class Events extends AppCompatActivity {
             };
 
     private void showDate(int year, int month, int day) {
-        EventDate.setText(new StringBuilder().append(day).append("/")
-                .append(month).append("/").append(year));
+        eventDate.setText(new StringBuilder().append(year).append("-")
+                .append(month).append("-").append(day));
     }
 
 
 
 
     public void addListenerOnSpinnerItemSelection() {
-       EventType  = (Spinner) findViewById(R.id.EventType);
-        EventType.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+       eventType  = (Spinner) findViewById(R.id.EventType);
+        eventType.setOnItemSelectedListener(new CustomOnItemSelectedListener());
     }
 
 
