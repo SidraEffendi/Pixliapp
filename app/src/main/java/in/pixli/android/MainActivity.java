@@ -27,8 +27,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static java.lang.Boolean.TRUE;
-
 /*
  *The main activity reacts on clicking the buttons guest login and create event. On Clicking create event  button
  * the Event_List.java activity will open up if the user is logged in else LoginActivity.java will open.
@@ -63,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         EVENT_ID ="79fc65f9";
         FOLDER_NAME = "img"+ EVENT_ID;
         Intent myintent = new Intent(MainActivity.this, BucketDisplay.class);
+        myintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         MainActivity.this.startActivity(myintent);
 
         /* Implementing the new flow.*/
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         /*To track if user clicked Create event button or 'already member' link and take action accordingly (from MainActivity).*/
         CLICKED_CREVENT = app_preferences.getInt("CLICKED_CREVENT",0);
 
-        //----- When create event button is clicked user is directed to CreateEvents java class -----//
+        //----- When create event button is clicked user is directed to CreateEventsActivity java class -----//
         CreateEvent = (Button) findViewById(R.id.Create);
         //Toast.makeText(getApplicationContext(), "Create clicked", Toast.LENGTH_SHORT).show();
         CreateEvent.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("logged in :" + CLICKED_CREVENT);
 
                 /* User is directed to login page since value is set to 0. */
-                Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+                Intent myIntent = new Intent(MainActivity.this, CreateEventsActivity.class);
                 MainActivity.this.startActivity(myIntent);
 
 

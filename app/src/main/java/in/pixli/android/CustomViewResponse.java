@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CustomViewResponse {
 
-    @SerializedName("CreateEvents")
+    @SerializedName("CreateEventsActivity")
     private List<CustomViewHolder> Events;
 
     public List<CustomViewHolder> getResults(){

@@ -400,7 +400,7 @@ public class LoginActivity extends AppCompatActivity implements
                         editor.commit(); // Very important
 
                         if (CLICKED_CREVENT == 1) {     //CLICKED_CREVENT declared in MainActivity.java
-                             /* Call the onActivityResult in CreateEvents class */
+                             /* Call the onActivityResult in CreateEventsActivity class */
                             Intent i = new Intent();
                             i.putExtra("data", email_Id);
                             setResult(Activity.RESULT_OK, i);

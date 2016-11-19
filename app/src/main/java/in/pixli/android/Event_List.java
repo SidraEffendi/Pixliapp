@@ -79,8 +79,9 @@ public class Event_List extends Activity{
         //EVENT_ID = "ASP1";
         EVENT_ID= hosted_events.get(1);
         Intent myIntent = new Intent(Event_List.this, BucketDisplay.class);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Event_List.this.startActivity(myIntent);
-        finish();
+        //finish();
     }
 
     public void displayEventList(){
