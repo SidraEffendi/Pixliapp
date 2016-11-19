@@ -1,10 +1,10 @@
-package com.example.sidra.pixliapp.retrofit;
+package in.pixli.android.retrofit;
 
-import com.example.sidra.pixliapp.CustomViewEventList;
-import com.example.sidra.pixliapp.CustomViewHolder;
-import com.example.sidra.pixliapp.CustomViewPhotosHolder;
-import com.example.sidra.pixliapp.CustomViewPhotosResponse;
-import com.example.sidra.pixliapp.CustomViewResponse;
+import in.pixli.android.CustomViewEventList;
+import in.pixli.android.CustomViewHolder;
+import in.pixli.android.CustomViewPhotosHolder;
+import in.pixli.android.CustomViewPhotosResponse;
+import in.pixli.android.CustomViewResponse;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

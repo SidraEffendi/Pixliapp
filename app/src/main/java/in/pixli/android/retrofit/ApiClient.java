@@ -1,4 +1,4 @@
-package com.example.sidra.pixliapp.retrofit;
+package in.pixli.android.retrofit;
 
 import android.util.Base64;
 

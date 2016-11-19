@@ -1,5 +1,6 @@
-package com.example.sidra.pixliapp;
+package in.pixli.android;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,8 +10,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.sidra.pixliapp.retrofit.ApiClient;
-import com.example.sidra.pixliapp.retrofit.ApiInterface;
+import com.pixli.sidra.android.R;
+
+import in.pixli.android.retrofit.ApiClient;
+import in.pixli.android.retrofit.ApiInterface;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -26,7 +29,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -45,10 +47,8 @@ import com.facebook.FacebookSdk;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static android.widget.RelativeLayout.TRUE;
-import static com.example.sidra.pixliapp.MainActivity.CLICKED_CREVENT;
-import static com.example.sidra.pixliapp.MainActivity.LOGGED_IN;
-import static com.example.sidra.pixliapp.MainActivity.app_preferences;
+import static in.pixli.android.MainActivity.CLICKED_CREVENT;
+import static in.pixli.android.MainActivity.LOGGED_IN;
 
 /**
  * Created by sidra on 01-11-2016.
@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements
         // [START customize_button]
         // Customize sign-in button. The sign-in button can be displayed in
         // multiple sizes and color schemes. It can also be contextually
-        // rendered based on the requested scopes. For example. a red button may
+        // rendered based on the requested scopes. For pixli. a red button may
         // be displayed when Google+ scopes are requested, but a white button
         // may be displayed when only basic profile is requested. Try adding the
         // Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
@@ -116,6 +116,7 @@ public class LoginActivity extends AppCompatActivity implements
 
         /* This the code for facebook login */
 
+        // [START Facebook Login]
         callbackManager = CallbackManager.Factory.create();
 
         loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -178,7 +179,7 @@ public class LoginActivity extends AppCompatActivity implements
                         // App code
                     }
                 });
-
+            // [END Facebook Login]
     }
 
     @Override
@@ -394,21 +395,21 @@ public class LoginActivity extends AppCompatActivity implements
                         System.out.println("CHECK HERE" + response.body().string());
 
                         // Mark that the user has successfully logged in
-                        SharedPreferences.Editor editor = app_preferences.edit();
-                        editor.putInt("LOGGED_IN", ++LOGGED_IN);
+                        SharedPreferences.Editor editor = MainActivity.app_preferences.edit();
+                        editor.putInt("LOGGED_IN", ++MainActivity.LOGGED_IN);
                         editor.commit(); // Very important
 
                         if (CLICKED_CREVENT == 1) {     //CLICKED_CREVENT declared in MainActivity.java
-                            /* Start Intent for Events class to fill in event detail. */
-                            Intent myIntent = new Intent(LoginActivity.this, Events.class);
-                            myIntent.putExtra("email_Id", email_Id);
-                            LoginActivity.this.startActivity(myIntent);
+                             /* Call the onActivityResult in CreateEvents class */
+                            Intent i = new Intent();
+                            i.putExtra("data", email_Id);
+                            setResult(Activity.RESULT_OK, i);
                             finish();
                         }
                         else{
-                            /* Start Intent for the event_Id entered by guest in MainActiviyt. */
+                            /* Start Event list for the event_Id entered by guest (in MainActivty). */
                             Intent myIntent = new Intent(LoginActivity.this, Event_List.class);
-                            myIntent.putExtra("email_Id", email_Id);
+                            myIntent.putExtra("data", email_Id);
                             LoginActivity.this.startActivity(myIntent);
                             finish();
                         }

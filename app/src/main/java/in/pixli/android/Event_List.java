@@ -1,4 +1,4 @@
-package com.example.sidra.pixliapp;
+package in.pixli.android;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,18 +7,18 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.sidra.pixliapp.retrofit.ApiClient;
-import com.example.sidra.pixliapp.retrofit.ApiInterface;
+import com.pixli.sidra.android.R;
+
+import in.pixli.android.retrofit.ApiClient;
+import in.pixli.android.retrofit.ApiInterface;
 
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.sidra.pixliapp.MainActivity.EVENT_ID;
-import static com.example.sidra.pixliapp.MainActivity.PHOTO_COUNT;
+import static in.pixli.android.MainActivity.EVENT_ID;
 
 /**
  * Created by sidra on 02-11-2016.
@@ -42,7 +42,8 @@ public class Event_List extends Activity{
         //Make a get call to get the list of events from database
 
         ApiInterface apiService1 = ApiClient.createService(ApiInterface.class);
-        Call<CustomViewEventList> call1 = apiService1.getEventList("sidra@gmail.com");
+        Call<CustomViewEventList> call1 = apiService1.getEventList(getIntent().getStringExtra("data"));
+        //Call<CustomViewEventList> call1 = apiService1.getEventList("sidraeffendi@gmail.com");
         call1.enqueue(new Callback<CustomViewEventList>() {
             @Override
             public void onResponse(Call<CustomViewEventList> call1, Response<CustomViewEventList> response) {
@@ -58,7 +59,7 @@ public class Event_List extends Activity{
                     Log.e("Hosted_events  :  ", hosted_events.get(1));
                     Log.e("Guest_events  :  ", guest_code_ids.get(1));
 
-                    PHOTO_COUNT =1;     /* static variable declared in MainActiviyt.java*/
+                    MainActivity.PHOTO_COUNT =1;     /* static variable declared in MainActiviyt.java*/
 
                     //Display the list of events
                     displayEventList();
@@ -75,9 +76,11 @@ public class Event_List extends Activity{
         });
 
         // Set the EVENT_ID= the one user clicked and start the BucketDispay file
-        EVENT_ID = "ASP1";
+        //EVENT_ID = "ASP1";
+        EVENT_ID= hosted_events.get(1);
         Intent myIntent = new Intent(Event_List.this, BucketDisplay.class);
         Event_List.this.startActivity(myIntent);
+        finish();
     }
 
     public void displayEventList(){

@@ -1,4 +1,4 @@
-package com.example.sidra.pixliapp;
+package in.pixli.android;
 
 import android.Manifest;
 import android.app.Activity;
@@ -13,11 +13,12 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 
+import com.pixli.sidra.android.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
-import static com.example.sidra.pixliapp.BucketDisplay.s3;
+import static in.pixli.android.BucketDisplay.s3;
 
 /**
  * Created by sidra on 22-10-2016.

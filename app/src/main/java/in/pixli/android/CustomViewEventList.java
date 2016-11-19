@@ -1,4 +1,4 @@
-package com.example.sidra.pixliapp;
+package in.pixli.android;
 
 import com.google.gson.annotations.SerializedName;
 

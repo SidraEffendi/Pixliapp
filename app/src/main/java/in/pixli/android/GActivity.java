@@ -1,4 +1,4 @@
-package com.example.sidra.pixliapp;
+package in.pixli.android;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +18,8 @@ import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.pixli.sidra.android.R;
 
 /**
  * Created by sidra on 23-10-2016.

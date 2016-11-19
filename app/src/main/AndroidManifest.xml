@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.sidra.pixliapp">
+    package="com.pixli.sidra.android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.NETWROK" />
@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme">
         <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true" />
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <activity android:name=".MainActivity">
+        <activity android:name="in.pixli.android.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,44 +26,44 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Events">
+        <activity android:name="in.pixli.android.CreateEvents">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
-        <activity android:name=".BucketDisplay">
+        <activity android:name="in.pixli.android.BucketDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".PhotoActivity">
+        <activity android:name="in.pixli.android.PhotoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".UploadActivity">
+        <activity android:name="in.pixli.android.UploadActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".GActivity">
+        <activity android:name="in.pixli.android.GActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name="in.pixli.android.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Event_List">
+        <activity android:name="in.pixli.android.Event_List">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT"/>

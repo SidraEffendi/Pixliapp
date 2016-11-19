@@ -1,4 +1,4 @@
-package com.example.sidra.pixliapp;
+package in.pixli.android;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CustomViewResponse {
 
-    @SerializedName("Events")
+    @SerializedName("CreateEvents")
     private List<CustomViewHolder> Events;
 
     public List<CustomViewHolder> getResults(){

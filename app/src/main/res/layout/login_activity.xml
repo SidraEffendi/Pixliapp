@@ -4,7 +4,7 @@
     android:id="@+id/activity_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sidra.pixliapp.LoginActivity">
+    tools:context="com.pixli.sidra.android.in.pixli.sidra.android.LoginActivity">
 
 
     <ImageView
@@ -112,7 +112,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.example.sidra.pixliapp.LoginActivity">
+    tools:context="pixliidra.android.LoginActivity">
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"

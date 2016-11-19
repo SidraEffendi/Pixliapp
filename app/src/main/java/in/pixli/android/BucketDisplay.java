@@ -1,9 +1,7 @@
-package com.example.sidra.pixliapp;
+package in.pixli.android;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,7 +16,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.amazonaws.ClientConfiguration;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
@@ -27,8 +24,10 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.example.sidra.pixliapp.retrofit.ApiClient;
-import com.example.sidra.pixliapp.retrofit.ApiInterface;
+import com.pixli.sidra.android.R;
+
+import in.pixli.android.retrofit.ApiClient;
+import in.pixli.android.retrofit.ApiInterface;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -40,10 +39,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.example.sidra.pixliapp.MainActivity.EVENT_ID;
-import static com.example.sidra.pixliapp.MainActivity.FOLDER_NAME;
-import static com.example.sidra.pixliapp.MainActivity.PHOTO_COUNT;
 
 /**
  * Created by sidra on 22-10-2016.
@@ -89,7 +84,7 @@ public class BucketDisplay extends AppCompatActivity {
 
         /*call to the database to check the no.of photos for the event*/
         ApiInterface apiService1 = ApiClient.createService(ApiInterface.class);
-        Call<ResponseBody> call1 = apiService1.getCountOfPhotos(EVENT_ID);
+        Call<ResponseBody> call1 = apiService1.getCountOfPhotos(MainActivity.EVENT_ID);
         call1.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call1,Response<ResponseBody> response) {
@@ -99,7 +94,7 @@ public class BucketDisplay extends AppCompatActivity {
 
                 if (response.body() != null){
 
-                    PHOTO_COUNT =1;   /* This flag means the event photo folder is not empty */
+                    MainActivity.PHOTO_COUNT =1;   /* This flag means the event photo folder is not empty */
                     photoEntry();     /* Function call to display the photos */
 
                     try {
@@ -170,7 +165,7 @@ public class BucketDisplay extends AppCompatActivity {
         if(requestCode == 123  && resultCode == RESULT_OK ) {
 
             /* If uploading photo to S3 bucket has been success full. */
-            System.out.println("INSIDE BUCKET AGAIN: "+ PHOTO_COUNT);
+            System.out.println("INSIDE BUCKET AGAIN: "+ MainActivity.PHOTO_COUNT);
 
             gridview.invalidateViews();   /* To invalidate view before photo upload. */
             photoEntry();                 /* Function call to display the photos. */
@@ -187,7 +182,7 @@ public class BucketDisplay extends AppCompatActivity {
     public void photoEntry(){
         /* make an api call to get the image_url(names) of the photos having current Event_ID. */
         ApiInterface apiService = ApiClient.createService(ApiInterface.class);
-        Call<CustomViewPhotosResponse> call = apiService.getPhotosOfEvent(EVENT_ID);
+        Call<CustomViewPhotosResponse> call = apiService.getPhotosOfEvent(MainActivity.EVENT_ID);
         call.enqueue(new Callback<CustomViewPhotosResponse>() {
             @Override
             public void onResponse(Call<CustomViewPhotosResponse> call, Response<CustomViewPhotosResponse> response) {
@@ -198,7 +193,7 @@ public class BucketDisplay extends AppCompatActivity {
                 if (customViewPhotosHolders != null){
 
                     /* Get the image urls (name) from the response body and store it in an array 'mThumbIds1'. */
-                    PHOTO_COUNT =1;
+                    MainActivity.PHOTO_COUNT =1;
                     System.out.println("photos exist");
                     List<String> images = new ArrayList<String>();
                     photoSize = customViewPhotosHolders.size();
@@ -207,11 +202,11 @@ public class BucketDisplay extends AppCompatActivity {
                     {
                         images.add(customViewPhotosHolders.get(i).getImage_url());
                         System.out.println("NAME photos " + images.get(i));
-                        mThumbIds1.add(FOLDER_NAME+"/"+images.get(i));
+                        mThumbIds1.add(MainActivity.FOLDER_NAME+"/"+images.get(i));
                         System.out.println("NAME photos " + mThumbIds1.get(i));
                     }
                     Log.e("BucketDisplaySize:", ""+photoSize);
-                    Log.e("BucketDisplaySize:", FOLDER_NAME);
+                    Log.e("BucketDisplaySize:", MainActivity.FOLDER_NAME);
 
                     /*Function call to display images in the gridview. */
                     setImage(BucketDisplay.this, gridview, 1);

@@ -1,21 +1,11 @@
-package com.example.sidra.pixliapp;
+package in.pixli.android;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -24,8 +14,10 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.example.sidra.pixliapp.retrofit.ApiClient;
-import com.example.sidra.pixliapp.retrofit.ApiInterface;
+import com.pixli.sidra.android.R;
+
+import in.pixli.android.retrofit.ApiClient;
+import in.pixli.android.retrofit.ApiInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,12 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.sidra.pixliapp.BucketDisplay.s3;
-import static com.example.sidra.pixliapp.MainActivity.EVENT_ID;
-import static com.example.sidra.pixliapp.MainActivity.FOLDER_NAME;
-import static com.example.sidra.pixliapp.MainActivity.PHOTO_COUNT;
-import static com.example.sidra.pixliapp.R.id.AlbumName;
-import static com.example.sidra.pixliapp.R.id.EventType;
+import static in.pixli.android.BucketDisplay.s3;
 
 /**
  * Created by sidra on 23-10-2016.
@@ -117,26 +104,26 @@ public class UploadActivity extends Activity{
                 System.out.println(Imgcode_temp);
 
                 /* The S3 bucket name of the image with the folder name is set */
-                FOLDER_NAME= "img"+EVENT_ID;
+                MainActivity.FOLDER_NAME= "img"+ MainActivity.EVENT_ID;
                 String picturePath = imagesPath[i];
                 fileToUpload = new File(picturePath);
 
                 /* Uploading the image to bucket. */
-                TransferObserver transferObserver = transferUtility.upload("pixliapp01", FOLDER_NAME +"/"+Imgcode_temp+"photo.jpg", fileToUpload);
+                TransferObserver transferObserver = transferUtility.upload("pixliapp01", MainActivity.FOLDER_NAME +"/"+Imgcode_temp+"photo.jpg", fileToUpload);
                 transferObserverListener(transferObserver);
 
                 //------- In this section the details of the photos uploaded to S3 bucket, are entered into the database via POST call
 
                 // entering the details of photos in the photos table
                 CustomViewPhotosHolder entry = new CustomViewPhotosHolder();       //creating object of CustomViewPhotosHolder type
-                entry.setPhoto_code_id(EVENT_ID);
+                entry.setPhoto_code_id(MainActivity.EVENT_ID);
                 UploadedPhotos = Imgcode_temp + "photo.jpg";
                 entry.setImage_url(UploadedPhotos);
 
 
                 /* Creating call to post data of Photos to databse through api. */
                 ApiInterface apiService = ApiClient.createService(ApiInterface.class);
-                Call<CustomViewPhotosResponse> call = apiService.createPhotos(EVENT_ID,entry);
+                Call<CustomViewPhotosResponse> call = apiService.createPhotos(MainActivity.EVENT_ID,entry);
                 call.enqueue(new Callback<CustomViewPhotosResponse>() {
                     @Override
                     public void onResponse(Call<CustomViewPhotosResponse> call, Response<CustomViewPhotosResponse> respo) {
@@ -163,7 +150,7 @@ public class UploadActivity extends Activity{
                     }
                 });
             }
-            PHOTO_COUNT =1; /* to mark there are photos inside the bucket  (declared in MainActivity). */
+            MainActivity.PHOTO_COUNT =1; /* to mark there are photos inside the bucket  (declared in MainActivity). */
             System.out.println("GOING BACK");
 
             /* returning to BucketDisplay.java after photo upload completion. */

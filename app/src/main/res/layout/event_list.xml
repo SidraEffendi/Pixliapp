@@ -20,20 +20,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:id="@+id/button4"
+        android:id="@+id/CrEventBucket"
         android:layout_marginLeft="47dp"
         android:layout_marginStart="47dp"
         android:layout_alignParentTop="true" />
 
     <Button
-        android:text="Button"
+        android:text="Guest Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="67dp"
         android:layout_marginEnd="67dp"
-        android:id="@+id/button5"
-        android:layout_alignBaseline="@+id/button4"
-        android:layout_alignBottom="@+id/button4"
+        android:id="@+id/GuestBucket"
+        android:layout_alignBaseline="@+id/CrEventBucket"
+        android:layout_alignBottom="@+id/CrEventBucket"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 </RelativeLayout>
