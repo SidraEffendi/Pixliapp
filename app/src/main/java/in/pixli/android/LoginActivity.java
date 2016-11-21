@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.pixli.sidra.android.R;
+import in.pixli.android.R;
 
 import in.pixli.android.retrofit.ApiClient;
 import in.pixli.android.retrofit.ApiInterface;
@@ -71,7 +71,8 @@ public class LoginActivity extends AppCompatActivity implements
     CallbackManager callbackManager;
     LoginButton loginButton;
 
-    String email_Id,displayName;
+    String displayName;
+    public  static String EMAIL_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +151,7 @@ public class LoginActivity extends AppCompatActivity implements
                                                 System.out.println("Email = " + email);
                                                 System.out.println("Name = " + name);
 
-                                                email_Id = email;
+                                                EMAIL_ID = email;
                                                 displayName = name;
 
                                                 /* call to function */
@@ -238,8 +239,8 @@ public class LoginActivity extends AppCompatActivity implements
             String authCode = acct.getServerAuthCode();
             //var id_token = acct.getAuthResponse().id_token;
             System.out.println(authCode);
-            email_Id = acct.getEmail();
-            System.out.println(email_Id);
+            EMAIL_ID = acct.getEmail();
+            System.out.println(EMAIL_ID);
 
             /* call to function */
             userDataEntry();
@@ -347,7 +348,7 @@ public class LoginActivity extends AppCompatActivity implements
 
         /* Api call to send user data to the database (creates user id if not already existing). */
         ApiInterface apiService = ApiClient.createService(ApiInterface.class);
-        Call<Void> call1 = apiService.createUsers(displayName,email_Id);
+        Call<Void> call1 = apiService.createUsers(displayName,EMAIL_ID);
         call1.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call1, Response<Void> respo) {
@@ -355,7 +356,7 @@ public class LoginActivity extends AppCompatActivity implements
 
                 Log.d("Message", "code..." + respo.code() + " message..." + respo.message());
                 System.out.println("Calling getToken");
-                getToken(email_Id,displayName);
+                getToken(EMAIL_ID,displayName);
 
                 Void respon = respo.body();
 
@@ -399,10 +400,9 @@ public class LoginActivity extends AppCompatActivity implements
                         editor.putInt("LOGGED_IN", ++MainActivity.LOGGED_IN);
                         editor.commit(); // Very important
 
-                        if (CLICKED_CREVENT == 1) {     //CLICKED_CREVENT declared in MainActivity.java
+                        if (CLICKED_CREVENT > 0) {     //CLICKED_CREVENT declared in MainActivity.java
                              /* Call the onActivityResult in CreateEventsActivity class */
                             Intent i = new Intent();
-                            i.putExtra("data", email_Id);
                             setResult(Activity.RESULT_OK, i);
                             finish();
                         }

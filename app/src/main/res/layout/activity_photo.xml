@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.pixli.sidra.android.in.pixli.sidra.android.PhotoActivity">
+    tools:context="in.pixli.android.PhotoActivity">
 
     <ImageView
         android:layout_width="200dp"

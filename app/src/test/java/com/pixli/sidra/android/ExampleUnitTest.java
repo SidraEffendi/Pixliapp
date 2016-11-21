@@ -1,4 +1,4 @@
-package com.pixli.sidra.android;
+package sidra.android;
 
 import org.junit.Test;
 

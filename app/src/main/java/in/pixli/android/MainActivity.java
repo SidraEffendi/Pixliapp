@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pixli.sidra.android.R;
+import in.pixli.android.R;
 
 import in.pixli.android.retrofit.ApiClient;
 import in.pixli.android.retrofit.ApiInterface;
@@ -51,11 +51,24 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences app_preferences;
     public static int LOGGED_IN;
     public static int CLICKED_CREVENT;
+    public  static int FROM_BUCKET;
+    public  static int AS_A_GUEST;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        /* Implementing the new flow.*/
+
+        // Get the app's shared preferences to keep track of user's activity in the app
+        app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        LOGGED_IN = app_preferences.getInt("LOGGED_IN",1);                /*To check is user has already logged in (from MainActivity).*/
+        System.out.println("logged in :" + LOGGED_IN);
+
+        AS_A_GUEST= app_preferences.getInt("AS_A_GUEST",0);        /*To check if user logged in as guest.*/
+        System.out.println("Eneterd as guest :" + AS_A_GUEST);
 
         /* For trial opening a bucket directly. */
         EVENT_ID ="79fc65f9";
@@ -64,18 +77,17 @@ public class MainActivity extends AppCompatActivity {
         myintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         MainActivity.this.startActivity(myintent);
 
-        /* Implementing the new flow.*/
-
-        // Get the app's shared preferences to keep track of user's activity in the app
-        app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        LOGGED_IN = app_preferences.getInt("LOGGED_IN",0);                /*To check is user has already logged in (from MainActivity).*/
-        System.out.println("logged in :" + LOGGED_IN);
-
         if(LOGGED_IN ==1){
 
             /* If user is logged in then we take him directly to the BucketDisplay */
             Intent myIntent = new Intent(MainActivity.this, BucketDisplay.class);
             MainActivity.this.startActivity(myIntent);
+            finish();
+        }
+        else if(AS_A_GUEST == 1){
+            Intent myIntent = new Intent(MainActivity.this, BucketDisplay.class);
+            MainActivity.this.startActivity(myIntent);
+            finish();
         }
         else{
 
@@ -147,8 +159,16 @@ public class MainActivity extends AppCompatActivity {
 
                                             /* the BucketDisplay.java file is opened to display photos of event. */
                                             FOLDER_NAME = "img"+EVENT_ID;
+
+                                            // Mark that the user has successfully logged in
+                                            SharedPreferences.Editor editor = app_preferences.edit();
+                                            editor.putInt("LOGGED_IN", ++AS_A_GUEST);
+                                            editor.commit(); // Very important
+
                                             Intent myIntent = new Intent(MainActivity.this, BucketDisplay.class);
+                                            myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             MainActivity.this.startActivity(myIntent);
+                                            //MainActivity.this.finish();
                                             try {
                                                 System.out.println(response.body().string());
                                             }catch (IOException e) {
@@ -191,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                     CLICKED_CREVENT = app_preferences.getInt("CLICKED_CREVENT",0); //set this value again to 1 when create event is clicked
                     System.out.println("logged in :" + CLICKED_CREVENT);
 
+
                 /* User is directed to login page since value is set to 0. */
                     Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
                     MainActivity.this.startActivity(myIntent);
@@ -198,5 +219,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        FROM_BUCKET = app_preferences.getInt("FROM_BUCKET",0);     /*This value will be updated in BucketDisplay.java.*/
+        System.out.println("logged in :" + FROM_BUCKET);
     }
 }

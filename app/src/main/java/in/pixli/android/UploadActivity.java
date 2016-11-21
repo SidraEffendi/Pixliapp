@@ -14,7 +14,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.pixli.sidra.android.R;
+import in.pixli.android.R;
 
 import in.pixli.android.retrofit.ApiClient;
 import in.pixli.android.retrofit.ApiInterface;
@@ -57,7 +57,7 @@ public class UploadActivity extends Activity{
         Log.i("my Main", "updating");
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
         /* Used for transfer of images from S3 bucket to app. */
         transferUtility = new TransferUtility(s3, getApplicationContext());
@@ -160,6 +160,9 @@ public class UploadActivity extends Activity{
             setResult(Activity.RESULT_OK, ii);
             System.out.println("333 GOING BACK");
             finish();             /*  This UploadActivity is removed from the stack as its work has completed. */
+        }
+        else{
+            UploadActivity.this.finish();
         }
     }
 

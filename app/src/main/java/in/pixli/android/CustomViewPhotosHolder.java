@@ -33,6 +33,10 @@ public class CustomViewPhotosHolder {
         this.share_count = share_count;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     public String getImage_url(){
         return image_url;
     }

@@ -1,5 +1,6 @@
 package in.pixli.android;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -26,7 +27,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import com.pixli.sidra.android.R;
+import in.pixli.android.R;
 
 import in.pixli.android.retrofit.ApiClient;
 import in.pixli.android.retrofit.ApiInterface;
@@ -38,6 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static in.pixli.android.MainActivity.FROM_BUCKET;
 import static in.pixli.android.MainActivity.LOGGED_IN;
 
 /**
@@ -126,7 +128,7 @@ public class CreateEventsActivity extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                if(albumName.getText().toString().equals("") && eventDate.getText().toString().equals("")){
+                if(albumName.getText().toString().equals("") || eventDate.getText().toString().equals("")){
                     //Write a toast message to show error to user
                     System.out.println("Empty fields");
                 }
@@ -156,10 +158,10 @@ public class CreateEventsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         /* Result returned from launching LoginActivity.java intent from Gridview.OnClickListener.*/
-        if(requestCode == 123  && resultCode == RESULT_OK && null != data) {
+        if(requestCode == 123  && resultCode == RESULT_OK ) {
 
             /* If user login has been success full, create event under their email id. */
-             email_Id = getIntent().getStringExtra("data");
+             email_Id = LoginActivity.EMAIL_ID;
             //System.out.println("INSIDE BUCKET AGAIN: "+ MainActivity.PHOTO_COUNT);
 
             /* function call to post event details to the database */
@@ -234,11 +236,18 @@ public class CreateEventsActivity extends AppCompatActivity {
                             MainActivity.EVENT_ID = code;
                             MainActivity.FOLDER_NAME = temp;
 
+                            if(MainActivity.FROM_BUCKET == 0) {
                             /* Start the BucketDisplay.java activity and remove this activity from cycle */
-                            Intent myIntent = new Intent(CreateEventsActivity.this, Event_List.class);
-                            myIntent.putExtra("data", email_Id);
-                            CreateEventsActivity.this.finish();    //removes this activity from the stack
-                            startActivity(myIntent);
+                                Intent myIntent = new Intent(CreateEventsActivity.this, Event_List.class);
+                                myIntent.putExtra("data", email_Id);
+                                CreateEventsActivity.this.finish();    //removes this activity from the stack
+                                startActivity(myIntent);
+                            }
+                            else{
+                                Intent i = new Intent();
+                                setResult(Activity.RESULT_OK, i);
+                                finish();
+                            }
                         }
 
                     }

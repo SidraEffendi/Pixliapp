@@ -13,7 +13,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 
-import com.pixli.sidra.android.R;
+import in.pixli.android.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;

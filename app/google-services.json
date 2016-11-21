@@ -1,0 +1,110 @@
+{
+  "project_info": {
+    "project_number": "312796068697",
+    "project_id": "postgresretroft"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312796068697:android:6a017350f5294bfb",
+        "android_client_info": {
+          "package_name": "com.example.sidra.oauth_trial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "312796068697-2vgqnsd95ukghbhj7uvael4oq48gt515.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABc3njErvxoG3bCAultaFpa2rXpmfA3rQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312796068697:android:6fd753b41af6ad0d",
+        "android_client_info": {
+          "package_name": "com.example.sidra.googlesigninandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "312796068697-2vgqnsd95ukghbhj7uvael4oq48gt515.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABc3njErvxoG3bCAultaFpa2rXpmfA3rQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312796068697:android:db7df726e8e3f8f7",
+        "android_client_info": {
+          "package_name": "in.pixli.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "312796068697-ohbm1slu2klggl419u6q0p729dd9rlc8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.pixli.android",
+            "certificate_hash": "CE9BD09EFD5B588E4700730D680CFBCD1F0DB3D6"
+          }
+        },
+        {
+          "client_id": "312796068697-2vgqnsd95ukghbhj7uvael4oq48gt515.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABc3njErvxoG3bCAultaFpa2rXpmfA3rQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

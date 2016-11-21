@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
     defaultConfig {
-        applicationId "com.pixli.sidra.android"
+        applicationId "in.pixli.android"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1

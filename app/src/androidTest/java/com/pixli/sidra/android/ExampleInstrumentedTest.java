@@ -1,4 +1,4 @@
-package com.pixli.sidra.android;
+package sidra.android;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.pixli.sidra.android", appContext.getPackageName());
+        assertEquals("sidra.android", appContext.getPackageName());
     }
 }

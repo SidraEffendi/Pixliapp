@@ -7,7 +7,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.pixli.sidra.android.R;
+import in.pixli.android.R;
 
 import in.pixli.android.retrofit.ApiClient;
 import in.pixli.android.retrofit.ApiInterface;

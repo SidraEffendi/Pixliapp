@@ -19,7 +19,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.pixli.sidra.android.R;
+import in.pixli.android.R;
 
 /**
  * Created by sidra on 23-10-2016.
