@@ -40,7 +40,8 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name="in.pixli.android.PhotoActivity">
+        <activity android:name="in.pixli.android.PhotoActivity"
+            android:parentActivityName=".BucketDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT"/>

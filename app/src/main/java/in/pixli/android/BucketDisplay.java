@@ -173,6 +173,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
         super.onStart();
     }
 
+
     // [START onActivityResult]
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -265,11 +266,12 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
             @Override
             public void onResponse(Call<CustomViewPhotosResponse> call, Response<CustomViewPhotosResponse> response) {
                 int statuscode = response.code();
-                List<CustomViewPhotosHolder> customViewPhotosHolders = response.body().getResults();
+                //List<CustomViewPhotosHolder> customViewPhotosHolders = response.body().getResults();
                 Log.e("BucketDisplayGetCall", "Response: "+statuscode);
 
-                if (customViewPhotosHolders != null){
-
+                //if (customViewPhotosHolders != null){
+                if (response.body() != null){
+                    List<CustomViewPhotosHolder> customViewPhotosHolders = response.body().getResults();
                     /* Get the image urls (name) from the response body and store it in an array 'mThumbIds1'. */
                     MainActivity.PHOTO_COUNT =1;
                     System.out.println("photos exist");
@@ -341,12 +343,13 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
         List<String> images = new ArrayList<String>();
         int startingPoint=0;
         Log.e("StartIdValue", ""+startIdValue);
+        Log.e("mTHMbs", ""+mThumbIds1.size());
         for(int i = startIdValue, count = photoSize; i < count; i++)
         {
             images.add(photoHolderArray.get(i).getImage_url());
             System.out.println("NAME photos " + images.get(i-startIdValue));
             mThumbIds1.add(MainActivity.FOLDER_NAME+"/"+images.get(i-startIdValue));
-            System.out.println("NAME photos " + mThumbIds1.get(i));
+            System.out.println("NAME photos " + mThumbIds1.get(i-startIdValue));
 
             ++startingPoint;
         }
@@ -381,6 +384,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
 
                     /* URL is generated for the each image in the S3 bucket*/
                     Log.e("URL: ", "started "+ mThumbIds1.size());
+                    Log.e("URL: ", "index "+ firstIndex);
                     for(int i=firstIndex;i< mThumbIds1.size();i++) {
 
                         //Extending the expiry time for photo remission
