@@ -1,5 +1,6 @@
 package in.pixli.android;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -240,13 +241,11 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
                         /* Show Fragment Activity and through it call photoEntry */
                         FragmentAndRecycleShow();
                     }
-
                     try {
                         System.out.println("CHECK HERE"+response.body().string());
                     }catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 }
                 else{
                     Log.e("Error",""+statuscode+ "......"+ "....null body");
@@ -339,7 +338,6 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
                     else{
                         Log.e("SomeError:", ""+PHOTOS_SIZE);
                     }
-
                 }
                 else{
                     Log.e("Error",""+statuscode+ "......"+ "....null body");
@@ -513,9 +511,34 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
 
                                             /* the BucketDisplay.java file is opened to display photos of event. */
                                         MainActivity.FOLDER_NAME = "img"+MainActivity.EVENT_ID;
-                                        WhatToDisplay();
                                         try {
                                             System.out.println(response.body().string());
+
+                                            /* the user is logged in so save this event id in the guest code column of database*/
+                                            ApiInterface apiService = ApiClient.createService(ApiInterface.class);
+                                            Call<CustomViewResponse> call2 = apiService.guestCodeEntry(LoginActivity.EMAIL_ID,MainActivity.EVENT_ID);
+                                            call2.enqueue(new Callback<CustomViewResponse>() {
+                                                @Override
+                                                public void onResponse(Call<CustomViewResponse> call3, Response<CustomViewResponse> respons) {
+                                                    int statuscode = respons.code();
+
+                                                    Log.d("Message", "code..." + respons.code() + " message..." + respons.message());
+
+                                                    CustomViewResponse respon = respons.body();
+                                                    if (respon == null) {
+                                                        Log.e("Error", "" + statuscode + "......" + respons.message() + "....null body");
+                                                    } else {
+                                                        Log.e("Success", "" + statuscode + "."+MainActivity.EVENT_ID + respons.message() + "guest code added to user");
+                                                        WhatToDisplay();
+                                                    }
+                                                }
+                                                @Override
+                                                public void onFailure(Call<CustomViewResponse> call2, Throwable t) {
+
+                                                    Log.e("EVENT Posting Failed", t.toString());
+                                                    Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
                                         }catch (IOException e) {
                                             e.printStackTrace();
                                         }
@@ -545,7 +568,6 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
             alertDialog1 = alertDialogBuilder1.create();
             alertDialog1.show();
 
-            /* the user is logged in so save this event id in the guest code column of database*/
         }
         else if (id == R.id.nav_terms) {
             Intent myIntent = new Intent(BucketDisplay.this, TermsAndConditions.class);

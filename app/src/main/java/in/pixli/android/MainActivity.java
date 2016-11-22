@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         /* For trial opening a bucket directly. */
         EVENT_ID ="79fc65f9";
         FOLDER_NAME = "img"+ EVENT_ID;
+        LoginActivity.EMAIL_ID= "sidraeffendi@gmail.com";
         Intent myintent = new Intent(MainActivity.this, BucketDisplay.class);
         myintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         MainActivity.this.startActivity(myintent);

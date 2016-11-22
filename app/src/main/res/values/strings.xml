@@ -16,7 +16,6 @@
     </string-array>
 
 
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -170,6 +169,9 @@
     <string name="heading_6">Headings are included in this Agreement for convenience only and shall not affect the construction or interpretation of this Agreement.</string>
     <string name="_23_entire_agreement">23. Entire Agreement</string>
     <string name="entire_6">These Terms, Community Guidelines, Privacy Policy and any other agreement or terms incorporated herein together with any documents expressly referred to in them, contain the entire agreement between us relating to the subject matter covered and supersede any previous agreements, arrangements, undertakings or proposals, written or oral between us in relation to such matters. No oral explanation or oral information given by any party shall alter the interpretation of these Terms, Community Guidelines, Privacy Policy and other agreement or terms incorporated herein. In agreeing to these Terms, you have not relied on any representation other than those expressly stated in these Terms by Pixli and you agree that you shall have no remedy on account of any misrepresentation, which has not been made expressly in these Terms.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Terms and policy n guidelines ends here -->
 </resources>

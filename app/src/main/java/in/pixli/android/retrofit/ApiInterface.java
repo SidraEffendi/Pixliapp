@@ -26,13 +26,17 @@ public interface ApiInterface {
     @GET("/token")
     Call<ResponseBody> getToken();
 
-    //Gets the the list of hosyed and guest events of a user
+    //Gets the the list of hosted and guest events of a user
     @GET("/pixget/{email_id}/elist")
     Call<CustomViewEventList> getEventList(@Path("email_id") String email_Id);
 
     //Checks if the event code(unique) provided exits
     @GET("/pixget/{event_id}/event")
     Call<ResponseBody> getEventsExits(@Path("event_id") String eventId);
+
+    //Makes entry of guest code in the user database
+    @POST("/pixpost/guestcode/{email_id}/{guest_code}")
+    Call<CustomViewResponse> guestCodeEntry(@Path("email_id") String email_Id,@Path("guest_code") String guest_code);
 
     //Creates a new event
     @POST("/pixpost/events/{email_id}")

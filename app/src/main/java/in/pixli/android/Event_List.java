@@ -32,7 +32,7 @@ public class Event_List extends Activity{
     List<String> hosted_events;
     List<String> guest_code_ids;
 
-    public SimpleCursorAdapter listAdapter;
+       public SimpleCursorAdapter listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,8 @@ public class Event_List extends Activity{
         //Make a get call to get the list of events from database
 
         ApiInterface apiService1 = ApiClient.createService(ApiInterface.class);
-        Call<CustomViewEventList> call1 = apiService1.getEventList(getIntent().getStringExtra("data"));
+        Call<CustomViewEventList> call1 = apiService1.getEventList(LoginActivity.EMAIL_ID);
+        //Call<CustomViewEventList> call1 = apiService1.getEventList(getIntent().getStringExtra("data"));
         //Call<CustomViewEventList> call1 = apiService1.getEventList("sidraeffendi@gmail.com");
         call1.enqueue(new Callback<CustomViewEventList>() {
             @Override
@@ -56,10 +57,12 @@ public class Event_List extends Activity{
                     hosted_events = response.body().getHosted_events();
                     guest_code_ids = response.body().getGuest_code_id();
 
+                    /* To get the no.of events hosted and attended as guest */
+                    int sizeHevents = hosted_events.size();
+                    int sizeGevents = guest_code_ids.size();
 
-
-                    Log.e("Hosted_events  :  ", hosted_events.get(1));
-                    Log.e("Guest_events  :  ", guest_code_ids.get(1));
+                    Log.e("Hosted_events  :  ", hosted_events.get(0));
+                    Log.e("Guest_events  :  ", guest_code_ids.get(0));
 
                     MainActivity.PHOTO_COUNT =1;     /* static variable declared in MainActiviyt.java*/
 
