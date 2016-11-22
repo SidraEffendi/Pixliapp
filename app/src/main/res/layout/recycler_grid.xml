@@ -1,0 +1,10 @@
+<!-- A RecyclerView with some commonly used attributes -->
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/my_recycler_view_image_grid"
+    android:scrollbars="vertical"
+    android:layout_width="wrap_content"
+    android:horizontalSpacing="2dp"
+    android:verticalSpacing="2dp"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
+

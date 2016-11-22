@@ -9,9 +9,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/bucket_display_fab"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        layout="@layout/bucket_display_fab"/>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

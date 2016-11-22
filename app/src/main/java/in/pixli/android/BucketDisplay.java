@@ -15,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -67,6 +68,11 @@ import static android.renderscript.RenderScript.ContextType.PROFILE;
 
 public class BucketDisplay extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
+
+    private RecyclerView mRecyclerView;
+    private ViewHolderRecycler mAdapter;
+
+
     //String[] mThumbIds1 = {"images/first.jpg","images/frustration.jpg","images/g.jpg"};
     //,"images/05es.jpg","images/15es","images/2 ee.jpg","images/25es.jpg","images/again??.jpg"
     //String[] mThumbIds1= new String[1000];
@@ -79,13 +85,13 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
      TransferUtility transferUtility;
 
     //public static String[] result = new String[2];
-    GridView gridview;
-    ImageAdapter adapter;
+   // GridView gridview;
+    //ImageAdapter adapter;
 
 
-    ActionBarDrawerToggle mDrawerToggle;
+  //  ActionBarDrawerToggle mDrawerToggle;
 
-    Button guestLogin;
+//    Button guestLogin;
 
     private static int BUCKET_TRIG_CREVENT = 1;
     private static int PHOTOS_SIZE =0;
@@ -97,6 +103,12 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bucket_main_nav);
+
+        //Recycler view code starts here
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view_image_grid);
+
+
+        //Recycler view code ends here
         //navbar code starts here
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -117,7 +129,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
         s3.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
         transferUtility = new TransferUtility(s3, getApplicationContext());  //Required for upload and download from s3 bucket
 
-        gridview = (GridView) findViewById(R.id.gridview);
+       // gridview = (GridView) findViewById(R.id.gridview);
         //adapter = new ImageAdapter(getApplicationContext());
 
         WhatToDisplay();     /* Function call to display the photos */
@@ -125,7 +137,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
 
 
         /*the gridview is made responsive to click on a photo*/
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+      /*  gridview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
                 //PHOTO_COUNT = 1;
@@ -135,7 +147,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
                 BucketDisplay.this.startActivity(intent);
             }
 
-        });
+        });*/
 
         /*fab button for uploading photos from gallery (or camera - to be implemented)*/
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -185,7 +197,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
             /* If uploading photo to S3 bucket has been success full. */
             System.out.println("INSIDE BUCKET AGAIN: "+ MainActivity.PHOTO_COUNT);
 
-            gridview.invalidateViews();   /* To invalidate view before photo upload. */
+            //gridview.invalidateViews();   /* To invalidate view before photo upload. */
             FragmentAndRecycleShow();     /* Function call to display the photos and event lists. */
             //setImage(BucketDisplay.this, gridview, 1);
 
@@ -295,7 +307,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
                     //int curentImageId = customViewPhotosHolders.get(photoSize).getId();
 
                     /*Function call to display images in the gridview. */
-                    //setImage(BucketDisplay.this, gridview, 1);
+                    //setImage(BucketDisplay.this, mRecyclerView, 1);
                     Log.e("SomeError:", ""+PHOTOS_SIZE);
 
                     if(PHOTOS_SIZE == 0){
@@ -310,7 +322,12 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
                         Log.e("Early PHOTO_ID2:", ""+PHOTOS_SIZE);
                         /* Call the gridview directly, no need to refresh the bucket*/
                         /* ImageAdapter is called to view the images. */
-                        gridview.setAdapter(new ImageAdapter(getApplicationContext()));
+                   //     gridview.setAdapter(new ImageAdapter(getApplicationContext()));
+
+                        mAdapter = new ViewHolderRecycler(result);
+                        mRecyclerView.setAdapter(mAdapter);
+
+
                     }
                     else if(PHOTOS_SIZE < photoSize){
                         Log.e("Early PHOTO_ID3:", ""+PHOTOS_SIZE);
@@ -360,7 +377,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
         Log.e("Update PHOTO_ID:", ""+PHOTOS_SIZE);
 
         /*Function call to display images in the gridview. */
-        setImage(BucketDisplay.this, gridview, 1,startingPoint);
+        setImage(BucketDisplay.this, mRecyclerView, 1,startingPoint);
     }
     // [END RefreshPhotos]
 
@@ -424,7 +441,14 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
 
 
                 /* ImageAdapter is called to view the images. */
-                gridview.setAdapter(new ImageAdapter(context));
+             //   gridview.setAdapter(new ImageAdapter(context));
+
+                int mNoOfColumns = Utility.calculateNoOfColumns(getApplicationContext());
+                mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), mNoOfColumns));
+
+//       mAdapter = new ViewHolderRecycler(getActivity(), mActionListener);
+                mAdapter = new ViewHolderRecycler(result);
+                mRecyclerView.setAdapter(mAdapter);
             }
         }.execute();
     }
@@ -555,7 +579,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
 
 
 
-    public class ImageAdapter extends BaseAdapter {
+   /* public class ImageAdapter extends BaseAdapter {
         private Context mContext;
 
         // Constructor
@@ -575,7 +599,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
             return 0;
         }
 
-         /*create a new ImageView for each item referenced by the Adapter*/
+         *//*create a new ImageView for each item referenced by the Adapter*//*
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView;
             //imageView = new ImageView(mContext);
@@ -594,7 +618,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
             //imageView.setImageResource(mThumbIds[position]);
             System.out.println("iiiiiiiiii");
 
-            /* Loading the images to gridview using Picasso library. */
+            *//* Loading the images to gridview using Picasso library. *//*
             Picasso.with(mContext)
                     .load(result.get(position))
                     .placeholder(R.drawable.s_9)
@@ -604,5 +628,64 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
                     .into(imageView);
             return imageView;
         }
+    }*/
+    public class ViewHolderRecycler extends RecyclerView.Adapter<MyViewHolder>{
+        private Context mContext;
+        List<String> photoListItem;
+
+        public ViewHolderRecycler(List<String> photoListItem){
+            this.photoListItem=photoListItem;
+
+
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.grid_image_recycle, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder,final int position) {
+
+            Picasso.with(getApplicationContext())
+                    .load(result.get(position))
+                    .placeholder(R.drawable.placeholder_img)
+                    .error(R.drawable.placeholder_error)
+                    //.resize(90, 90)
+                    //.centerInside()
+                    .into(holder.imageThumb);
+
+            holder.imageThumb.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view){
+                    Intent intent= new Intent(BucketDisplay.this,PhotoActivity.class);
+                    intent.putExtra("position",position);
+                    BucketDisplay.this.startActivity(intent);
+
+
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return photoListItem.size();
+        }
     }
+
+    class MyViewHolder extends RecyclerView.ViewHolder{
+
+        final public ImageView imageThumb;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            imageThumb = (ImageView) itemView.findViewById(R.id.imageGridItem);
+        }
+    }
+
+
 }

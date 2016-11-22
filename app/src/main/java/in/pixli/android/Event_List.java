@@ -56,6 +56,8 @@ public class Event_List extends Activity{
                     hosted_events = response.body().getHosted_events();
                     guest_code_ids = response.body().getGuest_code_id();
 
+
+
                     Log.e("Hosted_events  :  ", hosted_events.get(1));
                     Log.e("Guest_events  :  ", guest_code_ids.get(1));
 
