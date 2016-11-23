@@ -1,6 +1,7 @@
 package in.pixli.android.retrofit;
 
 import in.pixli.android.CustomViewEventList;
+import in.pixli.android.CustomViewEventListResponse;
 import in.pixli.android.CustomViewHolder;
 import in.pixli.android.CustomViewPhotosHolder;
 import in.pixli.android.CustomViewPhotosResponse;
@@ -28,7 +29,7 @@ public interface ApiInterface {
 
     //Gets the the list of hosted and guest events of a user
     @GET("/pixget/{email_id}/elist")
-    Call<CustomViewEventList> getEventList(@Path("email_id") String email_Id);
+    Call<CustomViewEventListResponse> getEventList(@Path("email_id") String email_Id);
 
     //Checks if the event code(unique) provided exits
     @GET("/pixget/{event_id}/event")

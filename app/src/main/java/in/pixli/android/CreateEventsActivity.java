@@ -219,7 +219,7 @@ public class CreateEventsActivity extends AppCompatActivity {
 
                 //creating call to post data to api
                 ApiInterface apiService = ApiClient.createService(ApiInterface.class);
-                Call<CustomViewResponse> call1 = apiService.createEvent(ab, email_Id);
+                Call<CustomViewResponse> call1 = apiService.createEvent(ab, LoginActivity.EMAIL_ID);
                 call1.enqueue(new Callback<CustomViewResponse>() {
                     @Override
                     public void onResponse(Call<CustomViewResponse> call1, Response<CustomViewResponse> respo) {

@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Eneterd as guest :" + AS_A_GUEST);
 
         /* For trial opening a bucket directly. */
-        EVENT_ID ="79fc65f9";
+        EVENT_ID ="b6d4b4f6";
         FOLDER_NAME = "img"+ EVENT_ID;
         LoginActivity.EMAIL_ID= "sidraeffendi@gmail.com";
         Intent myintent = new Intent(MainActivity.this, BucketDisplay.class);

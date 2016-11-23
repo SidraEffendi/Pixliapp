@@ -29,10 +29,11 @@ import static in.pixli.android.MainActivity.EVENT_ID;
 
 public class Event_List extends Activity{
 
-    List<String> hosted_events;
-    List<String> guest_code_ids;
 
        public SimpleCursorAdapter listAdapter;
+
+    List<CustomViewHolder> hostedEvent;
+    List<CustomViewEventList> attendedEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,29 +43,40 @@ public class Event_List extends Activity{
         //Make a get call to get the list of events from database
 
         ApiInterface apiService1 = ApiClient.createService(ApiInterface.class);
-        Call<CustomViewEventList> call1 = apiService1.getEventList(LoginActivity.EMAIL_ID);
+        Call<CustomViewEventListResponse> call1 = apiService1.getEventList(LoginActivity.EMAIL_ID);
         //Call<CustomViewEventList> call1 = apiService1.getEventList(getIntent().getStringExtra("data"));
         //Call<CustomViewEventList> call1 = apiService1.getEventList("sidraeffendi@gmail.com");
-        call1.enqueue(new Callback<CustomViewEventList>() {
+        call1.enqueue(new Callback<CustomViewEventListResponse>() {
             @Override
-            public void onResponse(Call<CustomViewEventList> call1, Response<CustomViewEventList> response) {
+            public void onResponse(Call<CustomViewEventListResponse> call1, Response<CustomViewEventListResponse> response) {
                 int statuscode = response.code();
 
                 Log.e("Getting no.of Photos", "Response: "+statuscode);
 
                 if (response.body() != null){
 
-                    hosted_events = response.body().getHosted_events();
-                    guest_code_ids = response.body().getGuest_code_id();
+                    hostedEvent =response.body().getEvents();
+                    attendedEvent = response.body().getGuestList();
+
 
                     /* To get the no.of events hosted and attended as guest */
-                    int sizeHevents = hosted_events.size();
-                    int sizeGevents = guest_code_ids.size();
+                    int sizeHevents = hostedEvent.size();
+                    int sizeGevents = attendedEvent.size();
 
-                    Log.e("Hosted_events  :  ", hosted_events.get(0));
-                    Log.e("Guest_events  :  ", guest_code_ids.get(0));
+                    if(sizeGevents != 0){
+                        System.out.println(hostedEvent.get(0).getCode_id());
+                    }
+
+                    Log.e("Hosted_events size  :  ",""+ sizeHevents);
+                    System.out.println(""+sizeHevents);
+                    System.out.println(hostedEvent.get(0).getCode_id());
+                    //Log.e("Guest_events  :  ", attendedEvent.get(0).getAttended_event_id());
 
                     MainActivity.PHOTO_COUNT =1;     /* static variable declared in MainActiviyt.java*/
+
+                    /* Set the event id, the photos of whihc will be displayed in Bucket */
+                    MainActivity.EVENT_ID= hostedEvent.get(0).getCode_id();
+                    System.out.println(MainActivity.EVENT_ID);
 
                     //Display the list of events
                     displayEventList();
@@ -75,14 +87,15 @@ public class Event_List extends Activity{
                 }
             }
             @Override
-            public void onFailure(Call<CustomViewEventList> call1,Throwable t) {
+            public void onFailure(Call<CustomViewEventListResponse> call1,Throwable t) {
                 t.printStackTrace();
             }
         });
 
         // Set the EVENT_ID= the one user clicked and start the BucketDispay file
-        //EVENT_ID = "ASP1";
-        EVENT_ID= hosted_events.get(1);
+        //MainActivity.EVENT_ID = "ASP1";
+
+        MainActivity.FOLDER_NAME ="img"+MainActivity.EVENT_ID;
         Intent myIntent = new Intent(Event_List.this, BucketDisplay.class);
         myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Event_List.this.startActivity(myIntent);

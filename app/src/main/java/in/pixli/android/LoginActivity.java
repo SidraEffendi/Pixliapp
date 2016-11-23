@@ -409,7 +409,8 @@ public class LoginActivity extends AppCompatActivity implements
                         else{
                             /* Start Event list for the event_Id entered by guest (in MainActivty). */
                             Intent myIntent = new Intent(LoginActivity.this, Event_List.class);
-                            myIntent.putExtra("data", email_Id);
+                            EMAIL_ID = email_Id;
+                            System.out.println("Email id value set login Activity to Event list" + EMAIL_ID);
                             LoginActivity.this.startActivity(myIntent);
                             finish();
                         }

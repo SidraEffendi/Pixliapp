@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,12 +22,13 @@ import java.io.File;
 import static in.pixli.android.BucketDisplay.s3;
 
 /**
+ *
  * Created by sidra on 22-10-2016.
  *
  * This class is responsible for enlarging the photo when clicked in the gridview of BucketDisplay class
  */
 
-public class PhotoActivity extends Activity {
+public class PhotoActivity extends AppCompatActivity {
 
     Button Download;
     ImageView imageView;
