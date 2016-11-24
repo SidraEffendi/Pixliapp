@@ -42,6 +42,7 @@ public class Event_List extends Activity{
 
         //Make a get call to get the list of events from database
 
+        Log.e("Inside event list","yoyo"+LoginActivity.EMAIL_ID);
         ApiInterface apiService1 = ApiClient.createService(ApiInterface.class);
         Call<CustomViewEventListResponse> call1 = apiService1.getEventList(LoginActivity.EMAIL_ID);
         //Call<CustomViewEventList> call1 = apiService1.getEventList(getIntent().getStringExtra("data"));
@@ -51,7 +52,7 @@ public class Event_List extends Activity{
             public void onResponse(Call<CustomViewEventListResponse> call1, Response<CustomViewEventListResponse> response) {
                 int statuscode = response.code();
 
-                Log.e("Getting no.of Photos", "Response: "+statuscode);
+                Log.e("Getting event list", "Response: "+statuscode);
 
                 if (response.body() != null){
 
@@ -63,12 +64,22 @@ public class Event_List extends Activity{
                     int sizeHevents = hostedEvent.size();
                     int sizeGevents = attendedEvent.size();
 
-                    if(sizeGevents != 0){
-                        System.out.println(hostedEvent.get(0).getCode_id());
+                    Log.e("Hosted_events size  :  ",""+ sizeHevents);
+                    Log.e("Attended_events size:  ",""+ sizeGevents);
+
+                    /* Printing the hosted event name */
+                    for(int i =0;i<hostedEvent.size();i++){
+                        System.out.println("Hosted event: "+hostedEvent.get(i).getCode_id());
                     }
 
-                    Log.e("Hosted_events size  :  ",""+ sizeHevents);
-                    System.out.println(""+sizeHevents);
+                    /* Printing the attended event name */
+                    if(sizeGevents != 0){
+                        for(int i =0;i<attendedEvent.size();i++){
+                            System.out.println("Guest event: "+attendedEvent.get(i).getAttended_event_id());
+                        }
+                    }
+
+
                     System.out.println(hostedEvent.get(0).getCode_id());
                     //Log.e("Guest_events  :  ", attendedEvent.get(0).getAttended_event_id());
 

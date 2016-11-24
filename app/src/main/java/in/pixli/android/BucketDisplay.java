@@ -235,7 +235,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
 
                     if(MainActivity.LOGGED_IN == 0){
                         /* Do not show Fragment call photoentry directly */
-                        photoEntry();
+                        //photoEntry();
                     }
                     else{
                         /* Show Fragment Activity and through it call photoEntry */
@@ -263,7 +263,7 @@ public class BucketDisplay extends AppCompatActivity implements NavigationView.O
      public  void FragmentAndRecycleShow(){
          /* . The code to View fragment goes here and then call photoEntry to initiate gridView */
          Toast.makeText(getApplicationContext(), "Will show fragment", Toast.LENGTH_LONG).show();
-         photoEntry();
+         //photoEntry();
      }
 
     // [Start photoEntry]

@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
         EVENT_ID ="b6d4b4f6";
         FOLDER_NAME = "img"+ EVENT_ID;
         LoginActivity.EMAIL_ID= "sidraeffendi@gmail.com";
-        Intent myintent = new Intent(MainActivity.this, BucketDisplay.class);
-        myintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent myintent = new Intent(MainActivity.this, Event_List.class);
+        //myintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         MainActivity.this.startActivity(myintent);
 
         if(LOGGED_IN ==1){
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
                 /* Mark that create event button has been clicked to later direct the user to filling event details */
                 CLICKED_CREVENT = app_preferences.getInt("CLICKED_CREVENT",1); //set this value again to 0 when already member is clicked
-                System.out.println("logged in :" + CLICKED_CREVENT);
+                System.out.println("Create event :" + CLICKED_CREVENT);
 
                 /* User is directed to login page since value is set to 0. */
                 Intent myIntent = new Intent(MainActivity.this, CreateEventsActivity.class);
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
                 /* Mark that already member textView has been clicked to later direct the user to Login page */
                     CLICKED_CREVENT = app_preferences.getInt("CLICKED_CREVENT",0); //set this value again to 1 when create event is clicked
-                    System.out.println("logged in :" + CLICKED_CREVENT);
+                    System.out.println("create event :" + CLICKED_CREVENT);
 
 
                 /* User is directed to login page since value is set to 0. */
@@ -222,6 +222,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         FROM_BUCKET = app_preferences.getInt("FROM_BUCKET",0);     /*This value will be updated in BucketDisplay.java.*/
-        System.out.println("logged in :" + FROM_BUCKET);
+        System.out.println("From Bucket:" + FROM_BUCKET);
     }
 }
