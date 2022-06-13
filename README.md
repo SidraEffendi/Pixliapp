@@ -2,7 +2,7 @@
 Photo collection and sharing.
 
 # Disclaimer
-This repository does not contain the entire code and waas moved to a private repository for security purpose.
+This repository does not contain the entire code and its developemnt was moved to a private repository for security purpose.
 
 # Contents
 The repository contains implementation of:
