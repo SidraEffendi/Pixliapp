@@ -7,6 +7,6 @@ This repository does not contain the entire code and its developemnt was moved t
 # Contents
 The repository contains implementation of:
  - Google and Facebook sign-in for android app. 
- - Get and pull requests to communicate with Flask API.
+ - Get and pull requests using retrofit to communicate with Flask API.
  - Uploading images to AWS S3 and downloading thumbnails created by AWS Lambda microservice.
  - Implementation of GridView to display user images.
